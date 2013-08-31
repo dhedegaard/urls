@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" />
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
+    <title>Redirector</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Redirector</h1>
+        <p>There are currently <b>{{ redirect_count }}</b> redirects!</p>
+        <hr />
+        {% if created_keyword %}
+            <div class="alert alert-success">
+                <b>Success!</b> The keyword <b><a href="/{{ created_keyword }}" target="_blank">{{ created_keyword }}</a></b> has been created.
+            </div>
+        {% endif %}
+        <form class="form-horizontal" method="post">
+            {% csrf_token %}
+            <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
+                <label for="inputKeyword" class="col-lg-2 control-label">Keyword:</label>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" id="inputKeyword" name="keyword"
+                           value="{% if form.keyword.value %}{{ form.keyword.value }}{% endif %}"
+                           placeholder="my-keyword-123" />
+                </div>
+                {% if form.keyword.errors %}
+                    <div class="col-lg-4 help-block">{{ form.keyword.errors.as_text }}</div>
+                {% endif %}
+            </div>
+            <div class="form-group{% if form.url.errors %} has-error{% endif %}">
+                <label for="inputUrl" class="col-lg-2 control-label">URL:</label>
+                <div class="col-lg-6">
+                    <input type="text" class="form-control" id="inputUrl" name="url"
+                           value="{% if form.url.value %}{{ form.url.value }}{% endif %}"
+                           placeholder="http://www.google.com/" />
+                </div>
+                {% if form.url.errors %}
+                    <div class="col-lg-4 help-block">{{ form.url.errors.as_text }}</div>
+                {% endif %}
+        </div>
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-lg-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="icon-file"></i>
+                        Create redirect
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
