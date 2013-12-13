@@ -41,7 +41,17 @@
                 {% if form.url.errors %}
                     <div class="col-lg-4 help-block">{{ form.url.errors.as_text }}</div>
                 {% endif %}
-        </div>
+            </div>
+            <div class="form-group{% if form.proxy.errors %} has-error{% endif %}">
+                <label class="col-lg-2 control-label" for="inputProxy">Proxy:</label>
+
+                <div class="col-lg-6">
+                    {{ form.proxy }}
+                </div>
+                {% if form.proxy.errors %}
+                    <div class="col-lg-4 help-block">{{ form.proxy.errors.as_text }}</div>
+                {% endif %}
+            </div>
             <div class="form-group">
                 <div class="col-lg-offset-2 col-lg-2">
                     <button type="submit" class="btn btn-primary">
