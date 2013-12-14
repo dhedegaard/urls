@@ -14,7 +14,7 @@ class UrlForm(forms.ModelForm):
 
     class Meta:
         model = Url
-        exclude = ['created', 'ipaddress']
+        exclude = ['created', 'ipaddress', 'user']
 
     def clean_keyword(self):
         keyword = self.cleaned_data['keyword']

@@ -1,5 +1,7 @@
 import requests
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import logout as logout_user
+from django.contrib.auth.decorators import login_required
 from django.http import (
     HttpResponseNotFound,
     HttpResponsePermanentRedirect,
@@ -25,13 +27,34 @@ def _get_client_ip(request):
         return request.META.get('REMOTE_ADDR')
 
 
+def logout(request):
+    logout_user(request)
+    return redirect('index')
+
+
+@login_required
+def list(request):
+    return render(request, 'list.html', {
+        'urls': Url.objects.all(),
+        'title': 'List',
+    })
+
+
+@login_required
+def delete(request):
+    url = Url.objects.get(keyword=request.POST['keyword'])
+    url.delete()
+    return redirect('list')
+
+
+@login_required
 def index(request):
     created_keyword = None
     if request.method == 'POST':
         form = UrlForm(request.POST)
         if form.is_valid():
             url = form.save(commit=False)
-            url.ipaddress = _get_client_ip(request)
+            url.user = request.user
             url.save()
 
             created_keyword = url.keyword
@@ -42,6 +65,7 @@ def index(request):
         'form': form,
         'created_keyword': created_keyword,
         'redirect_count': Url.objects.all().count(),
+        'title': 'Create',
     })
 
 

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"/>
+    <title>{{ title }}</title>
+</head>
+<body>
+<div class="container">
+    <div style="float: right">
+        Welcome
+        {% if user.is_authenticated %}
+            {{ user }} (<a href="{% url 'logout' %}">Logout</a>)
+        {% endif %}
+    </div>
+    <h1>Redirects{% if title %} - {{ title }}{% endif %}</h1>
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
