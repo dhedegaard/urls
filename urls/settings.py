@@ -1,4 +1,5 @@
 # Django settings for urls project.
+import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DEBUG = True
@@ -103,8 +104,6 @@ ROOT_URLCONF = 'urls.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'urls.wsgi.application'
-
-import os
 
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\', '/'),)
 

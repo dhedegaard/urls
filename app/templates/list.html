@@ -18,15 +18,16 @@
                 <tr>
                     <td>{{ url.keyword }}</td>
                     <td>{{ url.url }}</td>
-                    <td>{{ url.proxy }}</td>
+                    <td><i class="icon icon-big {% if url.proxy %}icon-check{% else %}icon-ban-circle{% endif %}"></i>
+                    </td>
                     <td>{{ url.user.username }}</td>
                     <td>{{ url.created }}</td>
                     <td>
                         <form style="display: inline;" action="{% url 'delete' %}" method="POST">
                             {% csrf_token %}
                             <input type="hidden" name="keyword" value="{{ url.keyword }}"/>
-                            <button type="submit" class="btn btn-sm btn-danger">
-                                <i class="icon icon-trash"></i> Delete
+                            <button type="submit" class="btn btn-xs btn-danger">
+                            <i class="icon icon-trash"></i> Delete
                             </button>
                         </form>
                     </td>

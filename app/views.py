@@ -42,6 +42,9 @@ def list(request):
 
 @login_required
 def delete(request):
+    if 'keyword' not in request.POST:
+        return redirect('list')
+
     url = Url.objects.get(keyword=request.POST['keyword'])
     url.delete()
     return redirect('list')
