@@ -51,3 +51,4 @@ javadoc
 .vagrant
 
 .idea
+staticfiles
