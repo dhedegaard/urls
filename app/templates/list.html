@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}List{% endblock %}
 {% block content %}
-    <a href="{% url 'index' %}" class="btn btn-success"><i class="icon icon-arrow-left"></i> Create redirect</a>
+    <a href="{% url 'index' %}" class="btn btn-success"><i class="fa fa-arrow-left"></i> Create redirect</a>
     <hr/>
     {% if urls|length == 0 %}
         <div class="alert alert-info">There are no urls in the database.</div>
@@ -9,17 +9,16 @@
         <table class="table table-condensed table-hover table-striped table-bordered">
             <tr>
                 <th>Keyword</th>
-                <th>URL</th>
                 <th>Proxy</th>
+                <th>URL</th>
                 <th>Created by</th>
                 <th>Created</th>
             </tr>
             {% for url in urls %}
                 <tr>
                     <td>{{ url.keyword }}</td>
+                    <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
                     <td>{{ url.url }}</td>
-                    <td><i class="icon icon-big {% if url.proxy %}icon-check{% else %}icon-ban-circle{% endif %}"></i>
-                    </td>
                     <td>{{ url.user.username }}</td>
                     <td>{{ url.created }}</td>
                     <td>
@@ -27,7 +26,7 @@
                             {% csrf_token %}
                             <input type="hidden" name="keyword" value="{{ url.keyword }}"/>
                             <button type="submit" class="btn btn-xs btn-danger">
-                            <i class="icon icon-trash"></i> Delete
+                                <i class="fa fa-trash-o"></i> Delete
                             </button>
                         </form>
                     </td>

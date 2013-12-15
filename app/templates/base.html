@@ -4,8 +4,8 @@
     <meta charset="UTF-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
     <title>{{ title }}</title>
 </head>
 <body>
@@ -14,6 +14,8 @@
         Welcome
         {% if user.is_authenticated %}
             {{ user }} (<a href="{% url 'logout' %}">Logout</a>)
+        {% else %}
+            anonymous
         {% endif %}
     </div>
     <h1>Redirects{% if title %} - {{ title }}{% endif %}</h1>
