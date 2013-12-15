@@ -35,7 +35,7 @@ def logout(request):
 @login_required
 def list(request):
     return render(request, 'list.html', {
-        'urls': Url.objects.all(),
+        'urls': Url.objects.select_related().all(),
         'title': 'List',
     })
 
