@@ -20,7 +20,11 @@
             {% for url in urls %}
                 {% if user.is_authenticated or url.public %}
                 <tr>
-                    <td>{{ url.keyword }}</td>
+                    <td>
+                        <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank">
+                            {{ url.keyword }}
+                        </a>
+                    </td>
                     <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
                     {% if user.is_authenticated %}
                         <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
