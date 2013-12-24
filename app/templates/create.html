@@ -50,6 +50,16 @@
                 <div class="col-lg-4 help-block">{{ form.proxy.errors.as_text }}</div>
             {% endif %}
         </div>
+        <div class="form-group{% if form.public.errors %} has-error{% endif %}">
+            <label class="col-lg-2 control-label" for="id_public">Public:</label>
+
+            <div class="col-lg-6">
+                <div class="checkbox">
+                    {{ form.public }}
+                </div>
+            </div>
+
+        </div>
         <div class="form-group">
             <div class="col-lg-offset-2 col-lg-2">
                 <button type="submit" class="btn btn-primary">

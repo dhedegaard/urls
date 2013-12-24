@@ -29,10 +29,9 @@ def _get_client_ip(request):
 
 def logout(request):
     logout_user(request)
-    return redirect('index')
+    return redirect('list')
 
 
-@login_required
 def list(request):
     return render(request, 'list.html', {
         'urls': Url.objects.select_related().all(),
@@ -51,7 +50,7 @@ def delete(request):
 
 
 @login_required
-def index(request):
+def create(request):
     created_keyword = None
     if request.method == 'POST':
         form = UrlForm(request.POST)
@@ -64,7 +63,7 @@ def index(request):
             form = UrlForm()
     else:
         form = UrlForm()
-    return render(request, 'index.html', {
+    return render(request, 'create.html', {
         'form': form,
         'created_keyword': created_keyword,
         'redirect_count': Url.objects.all().count(),

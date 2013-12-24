@@ -8,11 +8,14 @@ class Url(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, db_column='user')
     proxy = models.BooleanField(default=False)
+    public = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return 'keyword: %s, url: %s, created: %s, user: %s, proxy: %s' % (
-            self.keyword, self.url, self.created, self.user.username, self.proxy,
-        )
+        return ('keyword: %s, url: %s, created: %s, user: %s, '
+                'proxy: %s, public: %s' % (
+                    self.keyword, self.url, self.created, self.user.username,
+                    self.proxy, self.public,
+                ))
 
     class Meta:
         ordering = ['keyword']
