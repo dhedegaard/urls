@@ -14,8 +14,10 @@
                 <th>Proxy</th>
                 {% if user.is_authenticated %}<th>Public</th>{% endif %}
                 <th>URL</th>
+                {% if user.is_authenticated %}
                 <th>Created by</th>
                 <th>Created</th>
+                {% endif %}
             </tr>
             {% for url in urls %}
                 {% if user.is_authenticated or url.public %}
@@ -30,9 +32,9 @@
                         <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
                     {% endif %}
                     <td>{{ url.url }}</td>
+                    {% if user.is_authenticated %}
                     <td>{{ url.user.username }}</td>
                     <td>{{ url.created }}</td>
-                    {% if user.is_authenticated %}
                     <td>
                         <form style="display: inline;" action="{% url 'delete' %}" method="POST">
                             {% csrf_token %}
