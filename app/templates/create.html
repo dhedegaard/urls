@@ -38,21 +38,16 @@
                 <div class="col-lg-4 help-block">{{ form.url.errors.as_text }}</div>
             {% endif %}
         </div>
-        <div class="form-group{% if form.proxy.errors %} has-error{% endif %}">
+        <div class="form-group">
             <label class="col-lg-2 control-label" for="id_proxy">Proxy:</label>
-
             <div class="col-lg-6">
                 <div class="checkbox">
                     {{ form.proxy }}
                 </div>
             </div>
-            {% if form.proxy.errors %}
-                <div class="col-lg-4 help-block">{{ form.proxy.errors.as_text }}</div>
-            {% endif %}
         </div>
-        <div class="form-group{% if form.public.errors %} has-error{% endif %}">
+        <div class="form-group">
             <label class="col-lg-2 control-label" for="id_public">Public:</label>
-
             <div class="col-lg-6">
                 <div class="checkbox">
                     {{ form.public }}

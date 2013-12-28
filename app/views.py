@@ -33,11 +33,9 @@ def logout(request):
 
 
 def list(request):
-    urls = Url.objects.select_related()
-    
-    if request.user.is_authenticated():
-        urls = urls.all()
-    else:
+    urls = Url.objects.select_related().all()
+
+    if not request.user.is_authenticated():
         urls = urls.filter(public=True)
 
     return render(request, 'list.html', {
@@ -83,7 +81,8 @@ def _redirect_proxy(url):
         r = requests.get(url.url)
     except (requests.exceptions.ConnectionError, requests.exceptions.ConnectionError) as e:
         return HttpResponseServerError('%s' % e.message)
-    return HttpResponse(r.text, mimetype=r.headers.get('Content-Type', 'text/plain'))
+    return HttpResponse(
+        r.text, mimetype=r.headers.get('Content-Type', 'text/plain'))
 
 
 def redirector(request, keyword):
