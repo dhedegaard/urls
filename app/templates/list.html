@@ -6,7 +6,7 @@
     {% endif %}
     <hr/>
     {% if urls|length == 0 %}
-        <div class="alert alert-info">There are no urls in the database.</div>
+        <div class="alert alert-info">There are no {% if not user.is_authenticated %}public{% endif %} urls in the database.</div>
     {% else %}
         <table class="table table-condensed table-hover table-striped table-bordered">
             <tr>
@@ -20,7 +20,6 @@
                 {% endif %}
             </tr>
             {% for url in urls %}
-                {% if user.is_authenticated or url.public %}
                 <tr>
                     <td>
                         <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank">
@@ -46,7 +45,6 @@
                     </td>
                     {% endif %}
                 </tr>
-                {% endif %}
             {% endfor %}
         </table>
     {% endif %}

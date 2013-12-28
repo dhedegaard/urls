@@ -33,8 +33,15 @@ def logout(request):
 
 
 def list(request):
+    urls = Url.objects.select_related()
+    
+    if request.user.is_authenticated():
+        urls = urls.all()
+    else:
+        urls = urls.filter(public=True)
+
     return render(request, 'list.html', {
-        'urls': Url.objects.select_related().all(),
+        'urls': urls,
         'title': 'List',
     })
 
