@@ -7,6 +7,7 @@ urlpatterns = patterns('',
         {'template_name': 'login.html'}, name='login'),
     url(r'^logout$', 'app.views.logout', name='logout'),
     url(r'^$', 'app.views.list', name='list'),
-    url(r'^delete$', 'app.views.delete', name='delete'),
+    url(r'^delete/(?P<keyword>.+)$', 'app.views.delete', name='delete'),
+    url(r'^edit/(?P<keyword>.+)$', 'app.views.create', name='edit'),
     url(r'^(?P<keyword>.+)$', 'app.views.redirector', name='redirector'),
 )

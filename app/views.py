@@ -3,11 +3,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.http import (
+    HttpResponseBadRequest,
     HttpResponseNotFound,
     HttpResponsePermanentRedirect,
     HttpResponse,
     HttpResponseServerError,
     )
+from django.db import transaction
 
 from .forms import UrlForm
 from .models import Url
@@ -32,6 +34,16 @@ def logout(request):
     return redirect('list')
 
 
+def redirect_list(changed_keyword, changed_event_name):
+    '''
+    Redirects to the list url, with the given parameters.
+    '''
+    response = redirect('list')
+    response['Location'] += '?changed_keyword=%s&changed_event_name=%s' % (
+        changed_keyword, changed_event_name)
+    return response
+
+
 def list(request):
     urls = Url.objects.select_related().all()
 
@@ -41,45 +53,59 @@ def list(request):
     return render(request, 'list.html', {
         'urls': urls,
         'title': 'List',
+        'changed_keyword': request.GET.get('changed_keyword'),
+        'changed_event_name': request.GET.get('changed_event_name'),
     })
 
 
 @login_required
-def delete(request):
-    if 'keyword' not in request.POST:
-        return redirect('list')
-
-    url = Url.objects.get(keyword=request.POST['keyword'])
+@transaction.atomic
+def delete(request, keyword):
+    try:
+        url = Url.objects.get(keyword=keyword)
+    except Url.DoesNotExist:
+        return HttpResponseBadRequest('keyword does not exist: %s' % keyword)
     url.delete()
-    return redirect('list')
+    return redirect_list(keyword, 'deleted')
 
 
 @login_required
-def create(request):
-    created_keyword = None
+@transaction.atomic
+def create(request, keyword=None):
     if request.method == 'POST':
-        form = UrlForm(request.POST)
+        if keyword is not None:
+            # If we're editing, make sure to provide the existing instance.
+            form = UrlForm(
+                request.POST,
+                instance=Url.objects.get(keyword=keyword))
+        else:
+            form = UrlForm(request.POST)
         if form.is_valid():
             url = form.save(commit=False)
             url.user = request.user
             url.save()
 
-            created_keyword = url.keyword
-            form = UrlForm()
+            return redirect_list(
+                url.keyword,
+                'created' if keyword is None else 'changed')
     else:
-        form = UrlForm()
+        if keyword is not None:
+            form = UrlForm(instance=Url.objects.get(keyword=keyword))
+        else:
+            form = UrlForm()
     return render(request, 'create.html', {
         'form': form,
-        'created_keyword': created_keyword,
         'redirect_count': Url.objects.all().count(),
-        'title': 'Create',
+        'title': current_url.title(),
+        'keyword': keyword,
     })
 
 
 def _redirect_proxy(url):
     try:
         r = requests.get(url.url)
-    except (requests.exceptions.ConnectionError, requests.exceptions.ConnectionError) as e:
+    except (requests.exceptions.ConnectionError,
+            requests.exceptions.ConnectionError) as e:
         return HttpResponseServerError('%s' % e.message)
     return HttpResponse(
         r.text, mimetype=r.headers.get('Content-Type', 'text/plain'))

@@ -1,14 +1,7 @@
 {% extends 'base.html' %}
-{% block title %}Create{% endblock %}
 {% block content %}
     <a href="{% url 'list' %}" class="btn btn-success"><i class="fa fa-list"></i> View redirects</a>
     <hr/>
-    {% if created_keyword %}
-        <div class="alert alert-success">
-            <b>Success!</b> The keyword <b><a href="/{{ created_keyword }}"
-                                              target="_blank">{{ created_keyword }}</a></b> has been created.
-        </div>
-    {% endif %}
     {% if form.non_field_errors %}
         <div class="alert alert-danger">{{ form.non_field_errors }}</div>
     {% endif %}
