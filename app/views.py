@@ -1,4 +1,5 @@
 import requests
+from django.core.urlresolvers import resolve
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
@@ -96,7 +97,7 @@ def create(request, keyword=None):
     return render(request, 'create.html', {
         'form': form,
         'redirect_count': Url.objects.all().count(),
-        'title': current_url.title(),
+        'title': resolve(request.path_info).url_name.title(),
         'keyword': keyword,
     })
 
