@@ -8,29 +8,29 @@
     <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
         {% csrf_token %}
         <div class="form-group{% if form.username.errors %} has-error{% endif %}">
-            <label for="username" class="col-lg-2 control-label">{{ form.username.label_tag }}</label>
+            <label for="username" class="col-md-2 control-label">{{ form.username.label_tag }}</label>
 
-            <div class="col-lg-4">
+            <div class="col-md-4">
                 <input type="text" id="username" name="username" class="form-control"
                        value="{{ form.username.value|default:'' }}"/>
             </div>
             {% if form.username.errors %}
-                <div class="help-block col-lg-6">{{ form.username.errors }}</div>
+                <div class="help-block col-md-6">{{ form.username.errors }}</div>
             {% endif %}
         </div>
         <div class="form-group{% if form.password.errors %} has-error{% endif %}">
-            <label for="password" class="col-lg-2 control-label">{{ form.password.label_tag }}</label>
+            <label for="password" class="col-md-2 control-label">{{ form.password.label_tag }}</label>
 
-            <div class="col-lg-4">
+            <div class="col-md-4">
                 <input type="password" id="password" name="password" class="form-control"
                        value="{{ form.password.value|default:'' }}"/>
             </div>
             {% if form.password.errors %}
-                <div class="help-block col-lg-6">{{ form.password.errors }}</div>
+                <div class="help-block col-md-6">{{ form.password.errors }}</div>
             {% endif %}
         </div>
         <div class="form-group">
-            <div class="col-lg-offset-2 col-lg-2">
+            <div class="col-md-offset-2 col-md-2">
                 <button class="btn btn-primary" type="submit"><i class="fa fa-lock"></i> Login</button>
             </div>
         </div>

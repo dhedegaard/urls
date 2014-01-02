@@ -17,6 +17,7 @@
     {% if urls|length == 0 %}
         <div class="alert alert-info">There are no {% if not user.is_authenticated %}public{% endif %} urls in the database.</div>
     {% else %}
+    <div class="table-responsive">
         <table class="table table-condensed table-hover table-striped table-bordered">
             <tr>
                 <th>Keyword</th>
@@ -26,6 +27,7 @@
                 {% if user.is_authenticated %}
                 <th>Last edited by</th>
                 <th>Last edited</th>
+                <th>Actions</th>
                 {% endif %}
             </tr>
             {% for url in urls %}
@@ -60,6 +62,7 @@
                 </tr>
             {% endfor %}
         </table>
+    </div>
 
         <p>Total number of redirects: <b>{{ urls|length }}</b></p>
     {% endif %}
