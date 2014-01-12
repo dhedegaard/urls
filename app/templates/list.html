@@ -39,15 +39,18 @@
         {% for url in urls %}
         <tr>
             <td>
-                <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank">
-                    {{ url.keyword }}
-                </a>
+                {{ url.keyword }}
+
             </td>
             <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
             {% if user.is_authenticated %}
             <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
             {% endif %}
-            <td>{{ url.url }}</td>
+            <td>
+                <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank"><i class="fa fa-link"></i></a>
+
+                {{ url.url }}
+            </td>
             {% if user.is_authenticated %}
             <td>{{ url.user.username }}</td>
             <td>{{ url.created }}</td>
