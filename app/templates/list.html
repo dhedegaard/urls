@@ -1,69 +1,75 @@
 {% extends 'base.html' %}
+{% block navbar %}
+{% if user.is_authenticated %}
+<ul class="navbar-nav nav">
+    <li>
+        <a href="{% url 'create' %}">
+            Create Redirect
+        </a>
+    </li>
+</ul>
+{% endif %}
+{% endblock %}
 {% block content %}
-    {% if user.is_authenticated %}
-    <a href="{% url 'create' %}" class="btn btn-success"><i class="fa fa-file"></i> Create redirect</a>
-    {% endif %}
-    <hr/>
+{% if changed_keyword %}
+<div class="alert alert-success">
+  Keyword
+  <b><a href="{% url 'redirector' changed_keyword %}"
+    target="_blank">{{ changed_keyword }}</a></b>
+    has been <b>{{ changed_event_name }}</b> succesfully!
+</div>
+{% endif %}
 
-    {% if changed_keyword %}
-    <div class="alert alert-success">
-      Keyword
-      <b><a href="{% url 'redirector' changed_keyword %}"
-            target="_blank">{{ changed_keyword }}</a></b>
-      has been <b>{{ changed_event_name }}</b> succesfully!
+{% if urls|length == 0 %}
+<div class="alert alert-info">There are no {% if not user.is_authenticated %}public{% endif %} urls in the database.</div>
+{% else %}
+<div class="table-responsive">
+    <table class="table table-condensed table-hover table-striped table-bordered">
+        <tr>
+            <th>Keyword</th>
+            <th>Proxy</th>
+            {% if user.is_authenticated %}<th>Public</th>{% endif %}
+            <th>URL</th>
+            {% if user.is_authenticated %}
+            <th>Last edited by</th>
+            <th>Last edited</th>
+            <th>Actions</th>
+            {% endif %}
+        </tr>
+        {% for url in urls %}
+        <tr>
+            <td>
+                <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank">
+                    {{ url.keyword }}
+                </a>
+            </td>
+            <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
+            {% if user.is_authenticated %}
+            <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
+            {% endif %}
+            <td>{{ url.url }}</td>
+            {% if user.is_authenticated %}
+            <td>{{ url.user.username }}</td>
+            <td>{{ url.created }}</td>
+            <td>
+              <div class="btn-group btn-group-xs">
+                <a href="{% url 'edit' url.keyword %}"
+                class="btn btn-xs btn-warning">
+                <i class="fa fa-edit"></i>Edit
+            </a>
+            <a href="{% url 'delete' url.keyword %}"
+            class="btn btn-xs- btn-danger"
+            onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
+            <i class="fa fa-trash-o"></i> Delete
+        </a>
     </div>
-    {% endif %}
+</td>
+{% endif %}
+</tr>
+{% endfor %}
+</table>
+</div>
 
-    {% if urls|length == 0 %}
-        <div class="alert alert-info">There are no {% if not user.is_authenticated %}public{% endif %} urls in the database.</div>
-    {% else %}
-    <div class="table-responsive">
-        <table class="table table-condensed table-hover table-striped table-bordered">
-            <tr>
-                <th>Keyword</th>
-                <th>Proxy</th>
-                {% if user.is_authenticated %}<th>Public</th>{% endif %}
-                <th>URL</th>
-                {% if user.is_authenticated %}
-                <th>Last edited by</th>
-                <th>Last edited</th>
-                <th>Actions</th>
-                {% endif %}
-            </tr>
-            {% for url in urls %}
-                <tr>
-                    <td>
-                        <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank">
-                            {{ url.keyword }}
-                        </a>
-                    </td>
-                    <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
-                    {% if user.is_authenticated %}
-                        <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
-                    {% endif %}
-                    <td>{{ url.url }}</td>
-                    {% if user.is_authenticated %}
-                    <td>{{ url.user.username }}</td>
-                    <td>{{ url.created }}</td>
-                    <td>
-                      <div class="btn-group btn-group-xs">
-                        <a href="{% url 'edit' url.keyword %}"
-                           class="btn btn-xs btn-warning">
-                          <i class="fa fa-edit"></i>Edit
-                        </a>
-                        <a href="{% url 'delete' url.keyword %}"
-                           class="btn btn-xs- btn-danger"
-                           onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
-                          <i class="fa fa-trash-o"></i> Delete
-                        </a>
-                      </div>
-                    </td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-        <p>Total number of redirects: <b>{{ urls|length }}</b></p>
-    {% endif %}
+<p>Total number of redirects: <b>{{ urls|length }}</b></p>
+{% endif %}
 {% endblock %}

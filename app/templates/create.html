@@ -1,64 +1,70 @@
 {% extends 'base.html' %}
+{% block navbar %}
+<ul class="navbar-nav nav">
+    <li>
+        <a href="{% url 'list' %}">View redirects</a>
+
+    </li>
+</ul>
+{% endblock %}
 {% block content %}
-    <a href="{% url 'list' %}" class="btn btn-success"><i class="fa fa-list"></i> View redirects</a>
-    <hr/>
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-    {% endif %}
-    <form class="form-horizontal" method="post">
-        {% csrf_token %}
-        <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
-            <label for="inputKeyword" class="col-md-2 control-label">Keyword:</label>
+{% if form.non_field_errors %}
+<div class="alert alert-danger">{{ form.non_field_errors }}</div>
+{% endif %}
+<form class="form-horizontal" method="post">
+    {% csrf_token %}
+    <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
+        <label for="inputKeyword" class="col-md-2 control-label">Keyword:</label>
 
-            <div class="col-md-6">
-                <input type="text" class="form-control" id="inputKeyword" name="keyword"
-                       value="{% if form.keyword.value %}{{ form.keyword.value }}{% endif %}"
-                       placeholder="my-keyword-123" {% if keyword %}readonly="readonly"{% endif %}/>
+        <div class="col-md-6">
+            <input type="text" class="form-control" id="inputKeyword" name="keyword"
+            value="{% if form.keyword.value %}{{ form.keyword.value }}{% endif %}"
+            placeholder="my-keyword-123" {% if keyword %}readonly="readonly"{% endif %}/>
+        </div>
+        {% if form.keyword.errors %}
+        <div class="col-md-4 help-block">{{ form.keyword.errors.as_text }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.url.errors %} has-error{% endif %}">
+        <label for="inputUrl" class="col-md-2 control-label">URL:</label>
+
+        <div class="col-md-6">
+            <input type="text" class="form-control" id="inputUrl" name="url"
+            value="{% if form.url.value %}{{ form.url.value }}{% endif %}"
+            placeholder="http://www.google.com/"/>
+        </div>
+        {% if form.url.errors %}
+        <div class="col-md-4 help-block">{{ form.url.errors.as_text }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="id_proxy">Proxy:</label>
+        <div class="col-md-6">
+            <div class="checkbox">
+                {{ form.proxy }}
             </div>
-            {% if form.keyword.errors %}
-                <div class="col-md-4 help-block">{{ form.keyword.errors.as_text }}</div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label" for="id_public">Public:</label>
+        <div class="col-md-6">
+            <div class="checkbox">
+                {{ form.public }}
+            </div>
+        </div>
+
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-2">
+          <button type="submit" class="btn btn-primary">
+            <i class="fa fa-file"></i>
+            {% if keyword %}
+            Save changes
+            {% else %}
+            Create redirect
             {% endif %}
-        </div>
-        <div class="form-group{% if form.url.errors %} has-error{% endif %}">
-            <label for="inputUrl" class="col-md-2 control-label">URL:</label>
-
-            <div class="col-md-6">
-                <input type="text" class="form-control" id="inputUrl" name="url"
-                       value="{% if form.url.value %}{{ form.url.value }}{% endif %}"
-                       placeholder="http://www.google.com/"/>
-            </div>
-            {% if form.url.errors %}
-                <div class="col-md-4 help-block">{{ form.url.errors.as_text }}</div>
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="id_proxy">Proxy:</label>
-            <div class="col-md-6">
-                <div class="checkbox">
-                    {{ form.proxy }}
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-md-2 control-label" for="id_public">Public:</label>
-            <div class="col-md-6">
-                <div class="checkbox">
-                    {{ form.public }}
-                </div>
-            </div>
-
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-2">
-              <button type="submit" class="btn btn-primary">
-                <i class="fa fa-file"></i>
-                {% if keyword %}
-                Save changes
-                {% else %}
-                Create redirect
-                {% endif %}
-              </button>
-            </div>
-        </div>
-    </form>
+        </button>
+    </div>
+</div>
+</form>
 {% endblock %}

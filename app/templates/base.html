@@ -13,18 +13,27 @@
     <title>Redirects{% if title %} - {{ title }}{% endif %}</title>
 </head>
 <body>
-<div class="container">
-    <div style="float: right">
-        Welcome
-        {% if user.is_authenticated %}
-            {% if user.first_name %}{{ user.first_name }}{% else %}{{ user }}{% endif %}
-            (<a href="{% url 'logout' %}">Logout</a>)
-        {% else %}
-            anonymous (<a href="{% url 'create' %}">Login</a>)
-        {% endif %}
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <span class="navbar-brand">Redirects{% if title %} - {{ title }}{% endif %}</span>
+            </div>
+            <div class="collapse navbar-collapse">
+                {% block navbar %}{% endblock %}
+                <p class="navbar-text navbar-right">
+                    Welcome
+                    {% if user.is_authenticated %}
+                    {% if user.first_name %}{{ user.first_name }}{% else %}{{ user }}{% endif %}
+                    (<a href="{% url 'logout' %}">Logout</a>)
+                    {% else %}
+                    anonymous (<a href="{% url 'create' %}">Login</a>)
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
     </div>
-    <h1>Redirects{% if title %} - {{ title }}{% endif %}</h1>
-    {% block content %}{% endblock %}
-</div>
 </body>
 </html>

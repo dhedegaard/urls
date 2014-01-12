@@ -1,40 +1,46 @@
 {% extends 'base.html' %}
+{% block navbar %}
+<ul class="navbar-nav nav">
+    <li>
+        <a href="{% url 'list' %}">List redirects</a>
+    </li>
+</ul>
+{% endblock %}
 {% block content %}
-    <hr/>
-    {% if form.non_field_errors %}
-        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
-    {% endif %}
+{% if form.non_field_errors %}
+<div class="alert alert-danger">{{ form.non_field_errors }}</div>
+{% endif %}
 
-    <form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
-        {% csrf_token %}
-        <div class="form-group{% if form.username.errors %} has-error{% endif %}">
-            <label for="username" class="col-md-2 control-label">{{ form.username.label_tag }}</label>
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+    {% csrf_token %}
+    <div class="form-group{% if form.username.errors %} has-error{% endif %}">
+        <label for="username" class="col-md-2 control-label">{{ form.username.label_tag }}</label>
 
-            <div class="col-md-4">
-                <input type="text" id="username" name="username" class="form-control"
-                       value="{{ form.username.value|default:'' }}"/>
-            </div>
-            {% if form.username.errors %}
-                <div class="help-block col-md-6">{{ form.username.errors }}</div>
-            {% endif %}
+        <div class="col-md-4">
+            <input type="text" id="username" name="username" class="form-control"
+            value="{{ form.username.value|default:'' }}"/>
         </div>
-        <div class="form-group{% if form.password.errors %} has-error{% endif %}">
-            <label for="password" class="col-md-2 control-label">{{ form.password.label_tag }}</label>
+        {% if form.username.errors %}
+        <div class="help-block col-md-6">{{ form.username.errors }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group{% if form.password.errors %} has-error{% endif %}">
+        <label for="password" class="col-md-2 control-label">{{ form.password.label_tag }}</label>
 
-            <div class="col-md-4">
-                <input type="password" id="password" name="password" class="form-control"
-                       value="{{ form.password.value|default:'' }}"/>
-            </div>
-            {% if form.password.errors %}
-                <div class="help-block col-md-6">{{ form.password.errors }}</div>
-            {% endif %}
+        <div class="col-md-4">
+            <input type="password" id="password" name="password" class="form-control"
+            value="{{ form.password.value|default:'' }}"/>
         </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-2">
-                <button class="btn btn-primary" type="submit"><i class="fa fa-lock"></i> Login</button>
-            </div>
+        {% if form.password.errors %}
+        <div class="help-block col-md-6">{{ form.password.errors }}</div>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-2">
+            <button class="btn btn-primary" type="submit"><i class="fa fa-lock"></i> Login</button>
         </div>
+    </div>
 
-        <input type="hidden" name="next" value="{{ next }}"/>
-    </form>
+    <input type="hidden" name="next" value="{{ next }}"/>
+</form>
 {% endblock %}
