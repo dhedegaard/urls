@@ -11,12 +11,11 @@
 {% endif %}
 {% endblock %}
 {% block content %}
-{% if changed_keyword %}
+{% if messages %}
 <div class="alert alert-success">
-  Keyword
-  <b><a href="{% url 'redirector' changed_keyword %}"
-    target="_blank">{{ changed_keyword }}</a></b>
-    has been <b>{{ changed_event_name }}</b> succesfully!
+    {% for message in messages %}
+    <p>{{ message|safe }}</p>
+    {% endfor %}
 </div>
 {% endif %}
 

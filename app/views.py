@@ -1,5 +1,7 @@
 import requests
 from django.shortcuts import render, redirect
+from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.http import (
@@ -13,6 +15,26 @@ from django.db import transaction
 
 from .forms import UrlForm
 from .models import Url
+
+
+def _add_event_message(request, keyword, event):
+    '''
+    This methods buids and adds a HTML string to django messages.
+
+    :param request: The current request.
+    :param keyword: The keyword causing the event, as a string.
+    :param event: The name of the event, as a string (created/deleted/...).
+    '''
+    url = reverse('redirector', args=(keyword,))
+    message = '''
+        The keyword <b><a href="%(url)s" target="_blank">%(keyword)s</a>
+        </b> has been <b>%(event)s</b> succesfully!
+    ''' % {
+        'keyword': keyword,
+        'event': event,
+        'url': url,
+    }
+    messages.add_message(request, messages.INFO, message)
 
 
 def _get_client_ip(request):
@@ -32,16 +54,6 @@ def _get_client_ip(request):
 def logout(request):
     logout_user(request)
     return redirect('list')
-
-
-def redirect_list(changed_keyword, changed_event_name):
-    '''
-    Redirects to the list url, with the given parameters.
-    '''
-    response = redirect('list')
-    response['Location'] += '?changed_keyword=%s&changed_event_name=%s' % (
-        changed_keyword, changed_event_name)
-    return response
 
 
 def list(request):
@@ -66,7 +78,8 @@ def delete(request, keyword):
     except Url.DoesNotExist:
         return HttpResponseBadRequest('keyword does not exist: %s' % keyword)
     url.delete()
-    return redirect_list(keyword, 'deleted')
+    _add_event_message(request, keyword, 'deleted')
+    return redirect('list')
 
 
 @login_required
@@ -85,9 +98,10 @@ def create(request, keyword=None):
             url.user = request.user
             url.save()
 
-            return redirect_list(
-                url.keyword,
+            _add_event_message(
+                request, url.keyword,
                 'created' if keyword is None else 'changed')
+            return redirect('list')
     else:
         if keyword is not None:
             form = UrlForm(instance=Url.objects.get(keyword=keyword))
