@@ -34,7 +34,7 @@ def _add_event_message(request, keyword, event):
         'event': event,
         'url': url,
     }
-    messages.add_message(request, messages.INFO, message)
+    messages.success(request, message)
 
 
 def _get_client_ip(request):

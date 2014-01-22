@@ -12,11 +12,11 @@
 {% endblock %}
 {% block content %}
 {% if messages %}
-<div class="alert alert-success">
     {% for message in messages %}
-    <p>{{ message|safe }}</p>
+    <div class="alert alert-success">
+        <p>{{ message|safe }}</p>
+    </div>
     {% endfor %}
-</div>
 {% endif %}
 
 {% if urls|length == 0 %}
