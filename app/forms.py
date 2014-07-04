@@ -6,7 +6,7 @@ from django.core.validators import URLValidator
 from .models import Url
 from urls.urls import urlpatterns
 
-MATCH_SLUG = re.compile(r'^[a-z0-9][a-z0-9-][a-z0-9]+$')
+MATCH_SLUG = re.compile(r'^[a-z0-9][a-z0-9-\.]+[a-z0-9]$')
 
 
 class UrlForm(forms.ModelForm):
@@ -27,7 +27,7 @@ class UrlForm(forms.ModelForm):
 
         if not MATCH_SLUG.match(keyword):
             raise forms.ValidationError(
-                'keyword is not a-z, 0-9 and dashes: %s' % keyword)
+                'keyword is not a-z, 0-9, dots and dashes: %s' % keyword)
 
         # Make sure not to match any of the URL's currently matched.
         for url in urlpatterns:
