@@ -26,52 +26,57 @@
     <table class="table table-condensed table-hover table-striped table-bordered">
         <tr>
             <th>Keyword</th>
-            <th>Proxy</th>
-            {% if user.is_authenticated %}<th>Public</th>{% endif %}
+            <th class="hidden-xs hidden-sm">Proxy</th>
+            {% if user.is_authenticated %}
+            <th class="hidden-xs hidden-sm">Public</th>
+            {% endif %}
             <th>URL</th>
             {% if user.is_authenticated %}
-            <th>Last edited by</th>
-            <th>Last edited</th>
+            <th class="nowrap hidden-xs hidden-sm">Edited by</th>
+            <th class="nowrap hidden-xs hidden-sm">Edited when</th>
             <th>Actions</th>
             {% endif %}
         </tr>
         {% for url in urls %}
         <tr>
-            <td>
-                {{ url.keyword }}
-
+            <td class="nowrap">{{ url.keyword }}</td>
+            <td class="hidden-xs hidden-sm">
+                <i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i>
             </td>
-            <td><i class="fa fa-lg {% if url.proxy %}fa-check{% else %}fa-times{% endif %}"></i></td>
             {% if user.is_authenticated %}
-            <td><i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i></td>
+            <td class="hidden-xs hidden-sm">
+                <i class="fa fa-lg {% if url.public %}fa-check{% else %}fa-times{% endif %}"></i>
+            </td>
             {% endif %}
-            <td>
-                <a href="{% url 'redirector' keyword=url.keyword %}" target="_blank"><i class="fa fa-link"></i></a>
-
-                {{ url.url }}
+            <td class="nowrap">
+                <a href="{% url 'redirector' keyword=url.keyword %}"
+                   target="_blank">
+                   <i class="fa fa-link"></i>
+                </a>
+                <span class="hidden-xs hidden-sm" title="{{ url.url }}">{{ url.url|truncatechars:50 }}</span>
             </td>
             {% if user.is_authenticated %}
-            <td>{{ url.user.username }}</td>
-            <td>{{ url.created }}</td>
-            <td>
-              <div class="btn-group btn-group-xs">
-                <a href="{% url 'edit' url.keyword %}"
-                class="btn btn-xs btn-warning">
-                <i class="fa fa-edit"></i>Edit
-            </a>
-            <a href="{% url 'delete' url.keyword %}"
-            class="btn btn-xs- btn-danger"
-            onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
-            <i class="fa fa-trash-o"></i> Delete
-        </a>
-    </div>
-</td>
-{% endif %}
-</tr>
-{% endfor %}
-</table>
+            <td class="nowrap hidden-xs hidden-sm">{{ url.user.username }}</td>
+            <td class="nowrap hidden-xs hidden-sm">{{ url.created }}</td>
+            <td class="nowrap">
+                <div class="btn-group btn-group-xs">
+                    <a href="{% url 'edit' url.keyword %}"
+                       class="btn btn-xs btn-warning">
+                        <i class="fa fa-edit"></i>
+                        Edit
+                    </a>
+                    <a href="{% url 'delete' url.keyword %}"
+                       class="btn btn-xs- btn-danger"
+                       onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
+                        <i class="fa fa-trash-o"></i>
+                        Delete
+                    </a>
+                </div>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
 </div>
-
-<p>Total number of redirects: <b>{{ urls|length }}</b></p>
 {% endif %}
 {% endblock %}
