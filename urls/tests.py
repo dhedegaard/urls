@@ -3,7 +3,7 @@ from django.core.urlresolvers import resolve
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from app import views, models
+from . import views, models
 
 
 class UrlPatternsTests(TestCase):
