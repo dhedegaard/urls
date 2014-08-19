@@ -1,5 +1,5 @@
 import requests
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
@@ -126,11 +126,8 @@ def _redirect_proxy(url):
 
 
 def redirector(request, keyword):
-    try:
-        url = Url.objects.get(keyword=keyword)
-        if url.proxy:
-            return _redirect_proxy(url)
-        else:
-            return HttpResponsePermanentRedirect(url.url)
-    except Url.DoesNotExist:
-        return HttpResponseNotFound('No URL found for keyword: %s' % keyword)
+    url = get_object_or_404(Url, keyword=keyword)
+    if url.proxy:
+        return _redirect_proxy(url)
+    else:
+        return HttpResponsePermanentRedirect(url.url)
