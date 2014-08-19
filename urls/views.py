@@ -91,6 +91,10 @@ def create(request, keyword=None):
             url.user = request.user
             url.save()
 
+            # If we're changing the keyword of an existing redirect, delete the old one.
+            if keyword and keyword != form.cleaned_data['keyword']:
+                Url.objects.filter(keyword=keyword).delete()
+
             _add_event_message(
                 request, url.keyword,
                 'created' if keyword is None else 'changed')

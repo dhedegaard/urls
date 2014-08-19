@@ -21,8 +21,18 @@ class UrlForm(forms.ModelForm):
     def clean_keyword(self):
         keyword = self.cleaned_data['keyword']
 
+        keyword_exists = Url.objects.filter(keyword=keyword).exists()
+
+        # Don't allow an existing url to change keyword to another existing
+        # keyword.
+        if self.instance and\
+           self.instance.keyword != keyword and\
+           keyword_exists:
+            raise forms.ValidationError('keyword already exists!')
+
+        # Don't allow creating a new url with an existing keyword.
         if self.instance.pk is None and\
-           Url.objects.filter(keyword=keyword).exists():
+           keyword_exists:
             raise forms.ValidationError('keyword already exists: %s' % keyword)
 
         if not MATCH_SLUG.match(keyword):
