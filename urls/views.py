@@ -73,10 +73,7 @@ def list(request):
 @login_required
 @transaction.atomic
 def delete(request, keyword):
-    try:
-        url = Url.objects.get(keyword=keyword)
-    except Url.DoesNotExist:
-        return HttpResponseBadRequest('keyword does not exist: %s' % keyword)
+    url = get_object_or_404(Url, keyword=keyword)
     url.delete()
     _add_event_message(request, keyword, 'deleted')
     return redirect('list')
@@ -92,6 +89,7 @@ def create(request, keyword=None):
                 request.POST,
                 instance=Url.objects.get(keyword=keyword))
         else:
+            # Save a new form.
             form = UrlForm(request.POST)
         if form.is_valid():
             url = form.save(commit=False)
