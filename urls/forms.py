@@ -4,7 +4,7 @@ from django import forms
 from django.core.validators import URLValidator
 
 from .models import Url
-from urls.urls import urlpatterns
+from .urls import urlpatterns
 
 MATCH_SLUG = re.compile(r'^[a-z0-9][a-z0-9-\.]+[a-z0-9]$')
 

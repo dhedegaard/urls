@@ -49,6 +49,7 @@ javadoc
 *.suo
 .ropeproject
 .vagrant
+.DS_Store
 
 .idea
 staticfiles
