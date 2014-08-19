@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
+from django.utils.html import format_html
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseNotFound,
@@ -25,16 +26,10 @@ def _add_event_message(request, keyword, event):
     :param keyword: The keyword causing the event, as a string.
     :param event: The name of the event, as a string (created/deleted/...).
     '''
-    url = reverse('redirector', args=(keyword,))
-    message = '''
-        The keyword <b><a href="%(url)s" target="_blank">%(keyword)s</a>
-        </b> has been <b>%(event)s</b> succesfully!
-    ''' % {
-        'keyword': keyword,
-        'event': event,
-        'url': url,
-    }
-    messages.success(request, message)
+    messages.success(request, format_html(u'''
+        The keyword <b><a href="{0}" target="_blank">{1}</a>
+        </b> has been <b>{2}</b> succesfully!''',
+        reverse('redirector', args=(keyword,)), keyword, event))
 
 
 def _get_client_ip(request):
