@@ -88,3 +88,8 @@ class ClientTests(TestCase):
         # The Content-Type from the proxied URL should be returned to the
         # client.
         self.assertTrue(response['Content-Type'].startswith('text/html'))
+
+    def testNonExistingKeyword(self):
+        response = self.client.get('/random-does-not-exist')
+        self.assertEquals(response.status_code, 404)
+        self.assertEquals(response['Content-Type'], 'text/html')
