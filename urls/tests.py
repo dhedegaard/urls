@@ -79,7 +79,7 @@ class ClientTests(TestCase):
 
     def testExistingKeyword(self):
         response = self.client.get('/new-keyword')
-        self.assertEquals(response.status_code, 301)
+        self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], 'http://www.google.com/')
 
     def testExistingProxyKeyword(self):

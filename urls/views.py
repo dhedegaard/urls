@@ -10,7 +10,6 @@ from django.utils.html import format_html
 from django.http import (
     HttpResponseBadRequest,
     HttpResponseNotFound,
-    HttpResponsePermanentRedirect,
     HttpResponse,
     HttpResponseServerError,
     )
@@ -129,4 +128,4 @@ def redirector(request, keyword):
     if url.proxy:
         return _redirect_proxy(url)
     else:
-        return HttpResponsePermanentRedirect(url.url)
+        return redirect(url.url)
