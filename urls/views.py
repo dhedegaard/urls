@@ -12,7 +12,7 @@ from django.http import (
     HttpResponseNotFound,
     HttpResponse,
     HttpResponseServerError,
-    )
+)
 from django.db import transaction
 
 from .forms import UrlForm
@@ -27,9 +27,9 @@ def _add_event_message(request, keyword, event):
     :param keyword: The keyword causing the event, as a string.
     :param event: The name of the event, as a string (created/deleted/...).
     '''
-    messages.success(request, format_html(u'''
-        The keyword <b><a href="{0}" target="_blank">{1}</a>
-        </b> has been <b>{2}</b> succesfully!''',
+    messages.success(request, format_html(
+        u'The keyword <b><a href="{0}" target="_blank">{1}</a>'
+        u'</b> has been <b>{2}</b> succesfully!',
         reverse('redirector', args=(keyword,)), keyword, event))
 
 
@@ -92,7 +92,8 @@ def create(request, keyword=None):
             url.user = request.user
             url.save()
 
-            # If we're changing the keyword of an existing redirect, delete the old one.
+            # If we're changing the keyword of an existing redirect, delete the
+            # old one.
             if keyword and keyword != form.cleaned_data['keyword']:
                 Url.objects.filter(keyword=keyword).delete()
 

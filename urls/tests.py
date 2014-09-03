@@ -9,6 +9,7 @@ from . import views, models
 
 
 class UrlPatternsTests(TestCase):
+
     def testList(self):
         listview = resolve('/')
         self.assertEquals(listview.func, views.list)
@@ -37,7 +38,9 @@ class UrlPatternsTests(TestCase):
         keywordview = resolve('/keyword')
         self.assertEquals(keywordview.func, views.redirector)
 
+
 class ClientTests(TestCase):
+
     def setUp(self):
         user = User.objects.create(
             username='testuser', password='test123')

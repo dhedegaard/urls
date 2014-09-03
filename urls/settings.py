@@ -23,7 +23,8 @@ DATABASES = {
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['u.neo2k.dk', 'urls.neo2k.dk', 'u.dhedegaard.dk', 'urls.dhedegaard.dk']
+ALLOWED_HOSTS = ['u.neo2k.dk', 'urls.neo2k.dk',
+                 'u.dhedegaard.dk', 'urls.dhedegaard.dk']
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -69,9 +70,9 @@ STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
-# Put strings here, like "/home/html/static" or "C:/www/django/static".
-# Always use forward slashes, even on Windows.
-# Don't forget to use absolute paths, not relative paths.
+    # Put strings here, like "/home/html/static" or "C:/www/django/static".
+    # Always use forward slashes, even on Windows.
+    # Don't forget to use absolute paths, not relative paths.
 )
 
 # List of finder classes that know how to find static files in
@@ -103,8 +104,6 @@ ROOT_URLCONF = 'urls.urls'
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'urls.wsgi.application'
-
-TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\', '/'),)
 
 INSTALLED_APPS = (
     'django.contrib.auth',
@@ -144,3 +143,5 @@ LOGGING = {
         },
     }
 }
+
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
