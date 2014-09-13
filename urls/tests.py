@@ -1,9 +1,7 @@
 from __future__ import absolute_import
 
-import django.contrib.auth.views
-from django.core.urlresolvers import resolve
 from django.test import TestCase
-from django.contrib.auth.models import User, AnonymousUser
+from django.contrib.auth.models import User
 
 from .models import Url
 

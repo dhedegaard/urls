@@ -8,8 +8,6 @@ from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.utils.html import format_html
 from django.http import (
-    HttpResponseBadRequest,
-    HttpResponseNotFound,
     HttpResponse,
     HttpResponseServerError,
 )
