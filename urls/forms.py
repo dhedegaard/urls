@@ -29,16 +29,11 @@ class UrlForm(forms.ModelForm):
         if self.instance and\
            self.instance.keyword != keyword and\
            keyword_exists:
-            raise forms.ValidationError('keyword already exists!')
-
-        # Don't allow creating a new url with an existing keyword.
-        if self.instance.pk is None and\
-           keyword_exists:
-            raise forms.ValidationError('keyword already exists: %s' % keyword)
+            raise forms.ValidationError('Keyword already exists.')
 
         if not MATCH_SLUG.match(keyword):
             raise forms.ValidationError(
-                'keyword is not a-z, 0-9, dots and dashes: %s' % keyword)
+                'Keyword is not a-z, 0-9, dots and dashes.')
 
         # Make sure not to match any of the URL's currently matched.
         for url in urlpatterns:

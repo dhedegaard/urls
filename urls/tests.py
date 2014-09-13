@@ -3,96 +3,183 @@ from __future__ import absolute_import
 import django.contrib.auth.views
 from django.core.urlresolvers import resolve
 from django.test import TestCase
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 
-from . import views, models
-
-
-class UrlPatternsTests(TestCase):
-
-    def testList(self):
-        listview = resolve('/')
-        self.assertEquals(listview.func, views.list)
-
-    def testCreate(self):
-        createview = resolve('/create')
-        self.assertEquals(createview.func, views.create)
-
-    def testLogin(self):
-        loginview = resolve('/accounts/login/')
-        self.assertEquals(loginview.func, django.contrib.auth.views.login)
-
-    def testLogout(self):
-        logoutview = resolve('/logout')
-        self.assertEquals(logoutview.func, views.logout)
-
-    def testDelete(self):
-        deleteview = resolve('/delete/keyword')
-        self.assertEquals(deleteview.func, views.delete)
-
-    def testEdit(self):
-        editview = resolve('/edit/keyword')
-        self.assertEquals(editview.func, views.create)
-
-    def testKeyword(self):
-        keywordview = resolve('/keyword')
-        self.assertEquals(keywordview.func, views.redirector)
+from .models import Url
 
 
-class ClientTests(TestCase):
+class ModelsTestCase(TestCase):
 
     def setUp(self):
-        user = User.objects.create(
-            username='testuser', password='test123')
-        models.Url.objects.create(
-            keyword='new-keyword', url='http://www.google.com/',
-            user=user)
-        models.Url.objects.create(
-            keyword='new-proxy-keyword', url='http://www.google.com/',
-            user=user, proxy=True)
+        self.user = User.objects.create_superuser(
+            'testuser',
+            'test@mail.com',
+            'testpass',
+        )
 
-    def tearDown(self):
-        User.objects.filter(username='testuser').delete()
-        models.Url.objects.filter(
-            keyword='new-keyword', url='http://www.google.com/').delete()
+    def test_unicode(self):
+        keyword = Url.objects.create(
+            keyword='testkeyword',
+            url='http://www.testurl.com/',
+            proxy=True,
+            user=self.user,
+        )
 
-    def testList(self):
+        self.assertEqual(str(keyword),
+                         u'keyword: testkeyword, url: http://www.testurl.com/'
+                         u', proxy: True, public: False')
+
+
+class ViewsTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_superuser(
+            'testuser',
+            'test@mail.com',
+            'testpass',
+        )
+        self.keyword = Url.objects.create(
+            keyword='test-keyword', url='http://www.google.com/',
+            user=self.user)
+        self.keyword_proxy = Url.objects.create(
+            keyword='test-proxy-keyword', url='http://www.google.com/',
+            user=self.user, proxy=True)
+
+    def _login(self):
+        self.client.login(username='testuser', password='testpass')
+
+    def test_list(self):
         response = self.client.get('/')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
 
-    def testLogin(self):
+    def test_login(self):
         response = self.client.get('/accounts/login/')
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
-    def testCreateNotLoggedIn(self):
+    def test_create_not_loggedin(self):
         response = self.client.get('/create')
         self.assertEquals(response.status_code, 302)
         self.assertTrue(response['Location'].endswith(
             '/accounts/login/?next=/create'))
 
-    def testEditNotLoggedIn(self):
-        response = self.client.get('/create')
-        self.assertEquals(response.status_code, 302)
-
-    def testNonExistingKeyword(self):
+    def test_non_existing_keyword(self):
         response = self.client.get('/non-existing-keyword')
         self.assertEquals(response.status_code, 404)
 
-    def testExistingKeyword(self):
-        response = self.client.get('/new-keyword')
+    def test_existing_keyword(self):
+        response = self.client.get('/test-keyword')
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], 'http://www.google.com/')
 
-    def testExistingProxyKeyword(self):
-        response = self.client.get('/new-proxy-keyword')
+    def test_existing_proxy_keyword(self):
+        response = self.client.get('/test-proxy-keyword')
         self.assertEquals(response.status_code, 200)
-        # The Content-Type from the proxied URL should be returned to the
-        # client.
         self.assertTrue(response['Content-Type'].startswith('text/html'))
 
-    def testNonExistingKeyword(self):
-        response = self.client.get('/random-does-not-exist')
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(response['Content-Type'], 'text/html')
+    def test_delete_nonexistant_keyword(self):
+        keyword = self.keyword.keyword
+        self.keyword.delete()
+
+        self._login()
+        response = self.client.post('/delete/%s/' % keyword)
+        self.assertEqual(response.status_code, 404)
+
+    def test_delete_keywork(self):
+        self._login()
+        response = self.client.post('/delete/%s' % self.keyword.keyword)
+
+        self.assertRedirects(response, '/')
+        self.assertFalse(Url.objects.filter(pk=self.keyword.pk).exists())
+
+    def test_create_keyword(self):
+        self._login()
+        response = self.client.get('/create')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create.html')
+
+    def test_create_keyword_submit(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': 'test-keyword123',
+            'url': 'http://www.testurl.com/',
+        })
+
+        self.assertRedirects(response, '/')
+        new_keyword = Url.objects.get(keyword='test-keyword123')
+        self.assertEqual(new_keyword.url, 'http://www.testurl.com/')
+        self.assertEqual(new_keyword.user, self.user)
+
+    def test_create_keyword_submit_already_exists(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': self.keyword.keyword,
+            'url': 'http://www.testurl.com/',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'keyword',
+                             u'Keyword already exists.')
+
+    def test_create_keyword_used_by_system(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': 'create',
+            'url': 'http://www.testurl.com/',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'keyword',
+                             u'Keyword is used by an internal URL of the '
+                             u'system')
+
+    def test_create_keyword_not_slug(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': 'silly_keyword',
+            'url': 'http://www.testurl.com/',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'keyword',
+                             u'Keyword is not a-z, 0-9, dots and dashes.')
+
+    def test_edit_keyword(self):
+        self._login()
+        response = self.client.get('/edit/%s' % self.keyword.keyword)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'create.html')
+
+    def test_edit_keyword_submit(self):
+        self._login()
+        response = self.client.post('/edit/%s' % self.keyword.keyword, {
+            'keyword': 'new-testkeyword',
+            'url': 'http://www.newtesturl.com/',
+        })
+
+        self.assertRedirects(response, '/')
+        self.assertFalse(Url.objects.filter(pk=self.keyword.pk).exists())
+        new_keyword = Url.objects.get(keyword='new-testkeyword')
+        self.assertEqual(new_keyword.keyword, 'new-testkeyword')
+        self.assertEqual(new_keyword.url, 'http://www.newtesturl.com/')
+
+    def test_edit_keyword_submit_already_exists(self):
+        self._login()
+        response = self.client.post('/edit/%s' % self.keyword.keyword, {
+            'keyword': self.keyword_proxy.keyword,
+            'url': self.keyword.url,
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'keyword',
+                             u'Keyword already exists.')
+
+    def test_logout(self):
+        self._login()
+        response = self.client.post('/logout')
+
+        self.assertRedirects(response, '/')
+        self.assertNotIn('_auth_user_id', self.client.session)

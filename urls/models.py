@@ -13,11 +13,9 @@ class Url(models.Model):
     public = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return ('keyword: %s, url: %s, created: %s, user: %s, '
-                'proxy: %s, public: %s' % (
-                    self.keyword, self.url, self.created, self.user.username,
-                    self.proxy, self.public,
-                ))
+        return ('keyword: %s, url: %s, proxy: %s, public: %s' % (
+            self.keyword, self.url, self.proxy, self.public,
+        ))
 
     class Meta:
         ordering = ['keyword']
