@@ -19,7 +19,7 @@
         <div class="col-md-6">
             <input type="text" class="form-control" id="inputKeyword" name="keyword"
             value="{% if form.keyword.value %}{{ form.keyword.value }}{% endif %}"
-            placeholder="my-keyword-123" />
+            placeholder="my-keyword-123" autofocus />
         </div>
         {% if form.keyword.errors %}
         <div class="col-md-4 help-block">{{ form.keyword.errors.0 }}</div>
