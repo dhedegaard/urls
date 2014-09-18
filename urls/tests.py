@@ -110,6 +110,20 @@ class ViewsTestCase(TestCase):
         self.assertEqual(new_keyword.url, 'http://www.testurl.com/')
         self.assertEqual(new_keyword.user, self.user)
 
+
+    def test_create_keyword_submit_slugify(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': 'many weird Characters !"##%"%.',
+            'url': 'http://testsite.com/',
+            'slugify': 'on',
+        })
+
+        self.assertRedirects(response, '/')
+        new_keyword = Url.objects.get(keyword='many-weird-characters')
+        self.assertEqual(new_keyword.keyword, 'many-weird-characters')
+        self.assertEqual(new_keyword.url, 'http://testsite.com/')
+
     def test_create_keyword_submit_already_exists(self):
         self._login()
         response = self.client.post('/create', {
@@ -120,6 +134,17 @@ class ViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'keyword',
                              u'Keyword already exists.')
+
+    def test_create_keyword_submit_empty_url(self):
+        self._login()
+        response = self.client.post('/create', {
+            'keyword': 'testkeyword123',
+            'url': '',
+        })
+
+        self.assertEqual(response.status_code, 200)
+        self.assertFormError(response, 'form', 'url',
+                             u'This field is required.')
 
     def test_create_keyword_used_by_system(self):
         self._login()

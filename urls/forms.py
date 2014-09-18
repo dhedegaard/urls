@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import re
 
 from django import forms
 from django.core.validators import URLValidator
@@ -7,8 +6,6 @@ from django.utils.text import slugify as slugify_func
 
 from .models import Url
 from .urls import urlpatterns
-
-MATCH_SLUG = re.compile(r'^[a-z0-9][a-z0-9-\.]+[a-z0-9]$')
 
 
 class UrlForm(forms.ModelForm):
