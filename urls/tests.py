@@ -133,17 +133,6 @@ class ViewsTestCase(TestCase):
                              u'Keyword is used by an internal URL of the '
                              u'system')
 
-    def test_create_keyword_not_slug(self):
-        self._login()
-        response = self.client.post('/create', {
-            'keyword': 'silly_keyword',
-            'url': 'http://www.testurl.com/',
-        })
-
-        self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, 'form', 'keyword',
-                             u'Keyword is not a-z, 0-9, dots and dashes.')
-
     def test_edit_keyword(self):
         self._login()
         response = self.client.get('/edit/%s' % self.keyword.keyword)

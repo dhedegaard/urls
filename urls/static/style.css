@@ -6,3 +6,7 @@ body {
 .nowrap {
 	white-space: nowrap;
 }
+
+.nobold {
+	font-weight: normal;
+}

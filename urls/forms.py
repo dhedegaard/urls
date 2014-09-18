@@ -3,6 +3,7 @@ import re
 
 from django import forms
 from django.core.validators import URLValidator
+from django.utils.text import slugify as slugify_func
 
 from .models import Url
 from .urls import urlpatterns
@@ -14,31 +15,34 @@ class UrlForm(forms.ModelForm):
     url = forms.CharField(
         required=True, max_length=Url._meta.get_field('url').max_length,
         validators=[URLValidator()])
+    slugify = forms.BooleanField(required=False)
 
     class Meta:
         model = Url
         exclude = ['created', 'user']
 
-    def clean_keyword(self):
-        keyword = self.cleaned_data['keyword']
+    def clean(self):
+        super(UrlForm, self).clean()
+        if any(self.errors):
+            return
+        data = self.cleaned_data
+        keyword = data['keyword']
 
-        keyword_exists = Url.objects.filter(keyword=keyword).exists()
+        # Slugify the keyword, if needed.
+        if data['slugify'] and keyword:
+            data['keyword'] = keyword = slugify_func(data['keyword'])
 
-        # Don't allow an existing url to change keyword to another existing
-        # keyword.
-        if self.instance and\
-           self.instance.keyword != keyword and\
-           keyword_exists:
-            raise forms.ValidationError('Keyword already exists.')
+        keyword_already_exists = Url.objects.filter(keyword=keyword).exists()
 
-        if not MATCH_SLUG.match(keyword):
-            raise forms.ValidationError(
-                'Keyword is not a-z, 0-9, dots and dashes.')
+        if self.instance and self.instance.keyword != keyword and\
+           keyword_already_exists:
+            self.add_error('keyword', u'Keyword already exists.')
 
-        # Make sure not to match any of the URL's currently matched.
+        # Make sure not to match any non-redirector URL's from the urls module.
         for url in urlpatterns:
             if url.name != 'redirector' and url.regex.findall(keyword):
-                raise forms.ValidationError(
-                    'Keyword is used by an internal URL of the system')
+                self.add_error(
+                    'keyword', (u'Keyword is used by an internal '
+                                u'URL of the system'))
 
-        return keyword
+        return data

@@ -24,6 +24,14 @@
         {% if form.keyword.errors %}
         <div class="col-md-4 help-block">{{ form.keyword.errors.0 }}</div>
         {% endif %}
+        <div class="col-md-offset-2 col-md-10">
+            <input type="checkbox" name="{{ form.slugify.html_name }}"
+                   id="{{ form.slugify.auto_id }}"
+                   {% if form.slugify.value %}checked="checked"{% endif %} />
+            <label for="{{ form.slugify.auto_id }}" class="form-label nobold">
+                Slugify ?
+            </label>
+        </div>
     </div>
     <div class="form-group{% if form.url.errors %} has-error{% endif %}">
         <label for="inputUrl" class="col-md-2 control-label">URL:</label>
