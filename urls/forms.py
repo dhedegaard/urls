@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 from django import forms
 from django.core.validators import URLValidator
@@ -12,7 +12,8 @@ class UrlForm(forms.ModelForm):
     url = forms.CharField(
         required=True, max_length=Url._meta.get_field('url').max_length,
         validators=[URLValidator()])
-    slugify = forms.BooleanField(required=False)
+    slugify = forms.BooleanField(
+        label='Slugify the keyword ?', required=False)
 
     class Meta:
         model = Url
@@ -33,13 +34,13 @@ class UrlForm(forms.ModelForm):
 
         if self.instance and self.instance.keyword != keyword and\
            keyword_already_exists:
-            self.add_error('keyword', u'Keyword already exists.')
+            self.add_error('keyword', 'Keyword already exists.')
 
         # Make sure not to match any non-redirector URL's from the urls module.
         for url in urlpatterns:
             if url.name != 'redirector' and url.regex.findall(keyword):
                 self.add_error(
-                    'keyword', (u'Keyword is used by an internal '
-                                u'URL of the system'))
+                    'keyword', ('Keyword is used by an internal '
+                                'URL of the system'))
 
         return data

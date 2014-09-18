@@ -14,50 +14,64 @@
 <form class="form-horizontal" method="post">
     {% csrf_token %}
     <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
-        <label for="inputKeyword" class="col-md-2 control-label">Keyword:</label>
+        <label for="{{ form.keyword.auto_id }}" class="col-md-2 control-label">
+            {{ form.keyword.label }}:
+        </label>
 
         <div class="col-md-6">
-            <input type="text" class="form-control" id="inputKeyword" name="keyword"
-            value="{% if form.keyword.value %}{{ form.keyword.value }}{% endif %}"
-            placeholder="my-keyword-123" autofocus />
+            <input type="text" class="form-control"
+                   id="{{ form.keyword.auto_id }}" name="keyword"
+                   value="{{ form.keyword.value|default:'' }}"
+                   placeholder="my-keyword-123" autofocus />
         </div>
         {% if form.keyword.errors %}
         <div class="col-md-4 help-block">{{ form.keyword.errors.0 }}</div>
         {% endif %}
-        <div class="col-md-offset-2 col-md-10">
-            <input type="checkbox" name="{{ form.slugify.html_name }}"
-                   id="{{ form.slugify.auto_id }}"
-                   {% if form.slugify.value %}checked="checked"{% endif %} />
-            <label for="{{ form.slugify.auto_id }}" class="form-label nobold">
-                Slugify ?
-            </label>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label for="{{ form.slugify.auto_id }}" class="form-label">
+                    {{ form.slugify }}
+                    {{ form.slugify.label }}
+                </label>
+            </div>
         </div>
     </div>
     <div class="form-group{% if form.url.errors %} has-error{% endif %}">
-        <label for="inputUrl" class="col-md-2 control-label">URL:</label>
-
+        <label for="{{ form.url.auto_id }}" class="col-md-2 control-label">
+            {{ form.url.label }}:
+        </label>
         <div class="col-md-6">
-            <input type="text" class="form-control" id="inputUrl" name="url"
-            value="{% if form.url.value %}{{ form.url.value }}{% endif %}"
-            placeholder="http://www.google.com/"/>
+            <input type="text" class="form-control"
+                   id="{{ form.url.auto_id }}"
+                   name="{{ form.url.html_name }}"
+                   value="{{ form.url.value|default:'' }}"
+                   placeholder="http://www.google.com/"/>
         </div>
         {% if form.url.errors %}
         <div class="col-md-4 help-block">{{ form.url.errors.0 }}</div>
         {% endif %}
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" for="id_proxy">Proxy:</label>
-        <div class="col-md-6">
+        <div class="col-sm-offset-2 col-md-10">
             <div class="checkbox">
-                {{ form.proxy }}
+                <label class="control-label"
+                       for="{{ form.proxy.auto_id }}">
+                    {{ form.proxy }}
+                    {{ form.proxy.label }}
+                </label>
             </div>
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label" for="id_public">Public:</label>
-        <div class="col-md-6">
+        <div class="col-sm-offset-2 col-md-10">
             <div class="checkbox">
-                {{ form.public }}
+                <label class="control-label"
+                       for="{{ form.proxy.auto_id }}">
+                    {{ form.public }}
+                    {{ form.public.label }}
+                </label>
             </div>
         </div>
 
