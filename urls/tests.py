@@ -110,7 +110,6 @@ class ViewsTestCase(TestCase):
         self.assertEqual(new_keyword.url, 'http://www.testurl.com/')
         self.assertEqual(new_keyword.user, self.user)
 
-
     def test_create_keyword_submit_slugify(self):
         self._login()
         response = self.client.post('/create', {
