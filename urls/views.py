@@ -114,9 +114,8 @@ def create(request, keyword=None):
 
 def _redirect_proxy(url):
     try:
-        r = requests.get(url.url)
-    except (requests.exceptions.ConnectionError,
-            requests.exceptions.ConnectionError) as e:
+        r = requests.get(url)
+    except requests.exceptions.ConnectionError as e:
         return HttpResponseServerError('%s' % e.message)
     return HttpResponse(
         r.text, content_type=r.headers.get('Content-Type', 'text/plain'))
@@ -125,6 +124,6 @@ def _redirect_proxy(url):
 def redirector(request, keyword):
     url = get_object_or_404(Url, keyword=keyword)
     if url.proxy:
-        return _redirect_proxy(url)
+        return _redirect_proxy(url.url)
     else:
         return redirect(url.url)

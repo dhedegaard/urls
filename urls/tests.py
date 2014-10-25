@@ -1,9 +1,14 @@
 from __future__ import absolute_import
 
+import mock
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test.client import RequestFactory
+from django.http import HttpResponseServerError
+from requests.exceptions import ConnectionError
 
 from .models import Url
+from .views import _get_client_ip, _redirect_proxy
 
 
 class ModelsTestCase(TestCase):
@@ -194,3 +199,25 @@ class ViewsTestCase(TestCase):
 
         self.assertRedirects(response, '/')
         self.assertNotIn('_auth_user_id', self.client.session)
+
+    def test_get_client_ip(self):
+        req = RequestFactory().get('/')
+        req.META['HTTP_X_FORWARDED_FOR'] = '127.0.0.1'
+        req.META['REMOTE_ADDR'] = 'localhost'
+
+        self.assertEqual(_get_client_ip(req), '127.0.0.1')
+
+    def test_get_client_ip__no_forward(self):
+        req = RequestFactory().get('/')
+        req.META['REMOTE_ADDR'] = 'localhost'
+
+        self.assertEqual(_get_client_ip(req), 'localhost')
+
+    @mock.patch('urls.views.requests')
+    def test_redirector__exception(self, requests_patch):
+        requests_patch.get.side_effect = (
+            ConnectionError('something bad happened'))
+        requests_patch.exceptions.ConnectionError = ConnectionError
+
+        self.assertTrue(isinstance(
+            _redirect_proxy('http://testserver/'), HttpResponseServerError))
