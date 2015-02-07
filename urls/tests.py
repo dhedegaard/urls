@@ -86,12 +86,12 @@ class ViewsTestCase(TestCase):
         self.keyword.delete()
 
         self._login()
-        response = self.client.post('/delete/%s/' % keyword)
+        response = self.client.post('/%s/delete/' % keyword)
         self.assertEqual(response.status_code, 404)
 
     def test_delete_keywork(self):
         self._login()
-        response = self.client.post('/delete/%s' % self.keyword.keyword)
+        response = self.client.post('/%s/delete/' % self.keyword.keyword)
 
         self.assertRedirects(response, '/')
         self.assertFalse(Url.objects.filter(pk=self.keyword.pk).exists())
@@ -164,14 +164,14 @@ class ViewsTestCase(TestCase):
 
     def test_edit_keyword(self):
         self._login()
-        response = self.client.get('/edit/%s' % self.keyword.keyword)
+        response = self.client.get('/%s/edit/' % self.keyword.keyword)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create.html')
 
     def test_edit_keyword_submit(self):
         self._login()
-        response = self.client.post('/edit/%s' % self.keyword.keyword, {
+        response = self.client.post('/%s/edit/' % self.keyword.keyword, {
             'keyword': 'new-testkeyword',
             'url': 'http://www.newtesturl.com/',
         })
@@ -184,7 +184,7 @@ class ViewsTestCase(TestCase):
 
     def test_edit_keyword_submit_already_exists(self):
         self._login()
-        response = self.client.post('/edit/%s' % self.keyword.keyword, {
+        response = self.client.post('/%s/edit/' % self.keyword.keyword, {
             'keyword': self.keyword_proxy.keyword,
             'url': self.keyword.url,
         })
