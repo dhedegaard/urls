@@ -1,92 +1,12 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block navbar %}
 <ul class="navbar-nav nav">
     <li>
         <a href="{% url 'list' %}">View redirects</a>
-
     </li>
 </ul>
 {% endblock %}
 {% block content %}
-{% if form.non_field_errors %}
-<div class="alert alert-danger">{{ form.non_field_errors.0 }}</div>
-{% endif %}
-<form class="form-horizontal" method="post">
-    {% csrf_token %}
-    <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
-        <label for="{{ form.keyword.auto_id }}" class="col-md-2 control-label">
-            {{ form.keyword.label }}:
-        </label>
-
-        <div class="col-md-6">
-            <input type="text" class="form-control"
-                   id="{{ form.keyword.auto_id }}" name="keyword"
-                   value="{{ form.keyword.value|default:'' }}"
-                   placeholder="my-keyword-123" autofocus />
-        </div>
-        {% if form.keyword.errors %}
-        <div class="col-md-4 help-block">{{ form.keyword.errors.0 }}</div>
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label for="{{ form.slugify.auto_id }}" class="form-label">
-                    {{ form.slugify }}
-                    {{ form.slugify.label }}
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group{% if form.url.errors %} has-error{% endif %}">
-        <label for="{{ form.url.auto_id }}" class="col-md-2 control-label">
-            {{ form.url.label }}:
-        </label>
-        <div class="col-md-6">
-            <input type="text" class="form-control"
-                   id="{{ form.url.auto_id }}"
-                   name="{{ form.url.html_name }}"
-                   value="{{ form.url.value|default:'' }}"
-                   placeholder="http://www.google.com/"/>
-        </div>
-        {% if form.url.errors %}
-        <div class="col-md-4 help-block">{{ form.url.errors.0 }}</div>
-        {% endif %}
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-md-10">
-            <div class="checkbox">
-                <label class="control-label"
-                       for="{{ form.proxy.auto_id }}">
-                    {{ form.proxy }}
-                    {{ form.proxy.label }}
-                </label>
-            </div>
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-md-10">
-            <div class="checkbox">
-                <label class="control-label"
-                       for="{{ form.proxy.auto_id }}">
-                    {{ form.public }}
-                    {{ form.public.label }}
-                </label>
-            </div>
-        </div>
-
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-2">
-          <button type="submit" class="btn btn-primary">
-            <i class="fa fa-file"></i>
-            {% if keyword %}
-            Save changes
-            {% else %}
-            Create redirect
-            {% endif %}
-        </button>
-    </div>
-</div>
-</form>
+{% crispy form %}
 {% endblock %}

@@ -3,6 +3,8 @@ from __future__ import absolute_import, unicode_literals
 from django import forms
 from django.core.validators import URLValidator
 from django.utils.text import slugify as slugify_func
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Div, Submit
 
 from .models import Url
 from .urls import urlpatterns
@@ -17,7 +19,34 @@ class UrlForm(forms.ModelForm):
 
     class Meta:
         model = Url
-        exclude = ['created', 'user']
+        fields = [
+            'keyword',
+            'slugify',
+            'url',
+            'proxy',
+            'public',
+        ]
+        widgets = {
+            'keyword': forms.TextInput,
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(UrlForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-2'
+        self.helper.field_class = 'col-sm-6'
+        self.helper.layout = Layout(
+            'keyword',
+            Div('slugify', css_class='col-sm-offset-2 col-sm-10'),
+            'url',
+            Div('proxy', css_class='col-sm-offset-2 col-sm-10'),
+            Div('public', css_class='col-sm-offset-2 col-sm-10'),
+            Div(
+                Submit('submit', u'Save', css_class='btn-primary'),
+                css_class='col-sm-offset-2 col-sm-6',
+            ),
+        )
 
     def clean(self):
         super(UrlForm, self).clean()
