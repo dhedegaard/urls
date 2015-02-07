@@ -59,19 +59,18 @@
             <td class="nowrap hidden-xs hidden-sm">{{ url.user.username }}</td>
             <td class="nowrap hidden-xs hidden-sm">{{ url.created }}</td>
             <td class="nowrap">
-                <div class="btn-group btn-group-xs">
-                    <a href="{% url 'edit' url.keyword %}"
-                       class="btn btn-xs btn-warning">
-                        <i class="fa fa-edit"></i>
-                        Edit
-                    </a>
-                    <a href="{% url 'delete' url.keyword %}"
-                       class="btn btn-xs- btn-danger"
-                       onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
+                <a href="{% url 'edit' url.keyword %}"
+                   class="btn btn-xs btn-warning">
+                    <i class="fa fa-edit"></i>
+                    Edit
+                </a>
+                <form style="display: inline;" method="POST" action="{% url 'delete' url.keyword %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-xs btn-danger"
+                          onclick="return confirm('Are you sure you want to delete {{ url.keyword }} ?')">
                         <i class="fa fa-trash-o"></i>
-                        Delete
-                    </a>
-                </div>
+                    Delete
+                </form>
             </td>
             {% endif %}
         </tr>

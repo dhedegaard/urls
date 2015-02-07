@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.utils.html import format_html
+from django.views.decorators.http import require_POST
 from django.http import (
     HttpResponse,
     HttpResponseServerError,
@@ -65,6 +66,7 @@ def list(request):
 
 
 @login_required
+@require_POST
 @transaction.atomic
 def delete(request, keyword):
     url = get_object_or_404(Url, keyword=keyword)
