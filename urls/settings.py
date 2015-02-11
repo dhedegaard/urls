@@ -13,10 +13,10 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'urls',
-        'USER': 'urls',
-        'PASSWORD': 'urls1234',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'urls.db',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
     }
 }
