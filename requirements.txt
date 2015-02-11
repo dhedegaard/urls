@@ -1,5 +1,4 @@
 Django==1.7.4
 requests==2.5.1
-psycopg2==2.5.4
 mock==1.0.1
 django-crispy-forms==1.4.0
