@@ -115,7 +115,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'keyword',
-                             u'Keyword already exists.')
+                             'Keyword already exists.')
 
     def test_create_keyword_submit_empty_url(self):
         self._login()
@@ -126,7 +126,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'url',
-                             u'This field is required.')
+                             'This field is required.')
 
     def test_create_keyword_used_by_system(self):
         self._login()
@@ -137,8 +137,8 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'keyword',
-                             u'Keyword is used by an internal URL of the '
-                             u'system')
+                             'Keyword is used by an internal URL of the '
+                             'system')
 
     def test_edit_keyword(self):
         self._login()
@@ -169,7 +169,7 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFormError(response, 'form', 'keyword',
-                             u'Keyword already exists.')
+                             'Keyword already exists.')
 
     def test_logout(self):
         self._login()
