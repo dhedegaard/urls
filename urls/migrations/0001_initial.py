@@ -15,12 +15,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Url',
             fields=[
-                ('keyword', models.TextField(max_length=100, serialize=False, primary_key=True)),
+                ('keyword', models.TextField(max_length=100, serialize=False,
+                                             primary_key=True)),
                 ('url', models.TextField(max_length=2048)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('proxy', models.BooleanField(default=False)),
                 ('public', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, db_column=b'user')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                                           db_column='user')),
             ],
             options={
                 'ordering': ['keyword'],
