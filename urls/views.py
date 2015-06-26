@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
@@ -118,7 +118,7 @@ def _redirect_proxy(url):
     try:
         r = requests.get(url)
     except requests.exceptions.ConnectionError as e:
-        return HttpResponseServerError('%s' % e.message)
+        return HttpResponseServerError(str(e))
     return HttpResponse(
         r.text, content_type=r.headers.get('Content-Type', 'text/plain'))
 

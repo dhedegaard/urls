@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import mock
 from django.test import TestCase
@@ -9,28 +9,6 @@ from requests.exceptions import ConnectionError
 
 from .models import Url
 from .views import _get_client_ip, _redirect_proxy
-
-
-class ModelsTestCase(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_superuser(
-            'testuser',
-            'test@mail.com',
-            'testpass',
-        )
-
-    def test_unicode(self):
-        keyword = Url.objects.create(
-            keyword='testkeyword',
-            url='http://www.testurl.com/',
-            proxy=True,
-            user=self.user,
-        )
-
-        self.assertEqual(str(keyword),
-                         u'keyword: testkeyword, url: http://www.testurl.com/'
-                         u', proxy: True, public: False')
 
 
 class ViewsTestCase(TestCase):
@@ -79,7 +57,7 @@ class ViewsTestCase(TestCase):
     def test_existing_proxy_keyword(self):
         response = self.client.get('/test-proxy-keyword')
         self.assertEquals(response.status_code, 200)
-        self.assertTrue(response['Content-Type'].startswith('text/html'))
+        self.assertTrue(response['Content-Type'], 'text/html')
 
     def test_delete_nonexistant_keyword(self):
         keyword = self.keyword.keyword
