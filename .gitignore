@@ -56,3 +56,6 @@ staticfiles
 
 .coverage
 htmlcov
+
+urls.db
+venv
