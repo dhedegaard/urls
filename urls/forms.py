@@ -43,7 +43,7 @@ class UrlForm(forms.ModelForm):
             Div('proxy', css_class='col-sm-offset-2 col-sm-10'),
             Div('public', css_class='col-sm-offset-2 col-sm-10'),
             Div(
-                Submit('submit', u'Save', css_class='btn-primary'),
+                Submit('submit', 'Save', css_class='btn-primary'),
                 css_class='col-sm-offset-2 col-sm-6',
             ),
         )
