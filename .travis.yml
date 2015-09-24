@@ -18,5 +18,5 @@ install:
 script: coverage run --source=urls manage.py test
 
 after_success:
-    coveralls
-    codecov
+- coveralls
+- codecov
