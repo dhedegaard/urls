@@ -3,7 +3,6 @@ import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     ('Dennis Hedegaard', 'dennis@dhedegaard.dk'),
@@ -85,12 +84,6 @@ STATICFILES_FINDERS = (
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'jw-_tia*(q^e^pb^5n7q492sxpm%k*xg!0ya7uuh$%htpd7*7g'
 
-# List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -148,3 +141,22 @@ LOGGING = {
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+            ],
+        },
+    },
+]
