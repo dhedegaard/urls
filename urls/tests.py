@@ -163,7 +163,6 @@ class ViewsTestCase(TestCase):
 
     def test_edit_keyword_submit(self):
         self._login()
-        keyword_pk = self.keyword.pk
         response = self.client.post(reverse('edit', kwargs={
             'keyword': self.keyword.keyword,
         }), {

@@ -4,7 +4,6 @@ import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.auth import logout as logout_user
 from django.contrib.auth.decorators import login_required
 from django.utils.html import format_html
 from django.views.decorators.http import require_POST
@@ -44,11 +43,6 @@ def _get_client_ip(request):
         return x_forwarded_for.split(',')[0]
     else:
         return request.META.get('REMOTE_ADDR')
-
-
-def logout(request):
-    logout_user(request)
-    return redirect('list')
 
 
 def list(request):
