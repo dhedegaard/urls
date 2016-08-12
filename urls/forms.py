@@ -7,7 +7,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
 
 from .models import Url
-from .urls import urlpatterns
 
 
 class UrlForm(forms.ModelForm):
@@ -66,6 +65,7 @@ class UrlForm(forms.ModelForm):
             self.add_error('keyword', 'Keyword already exists.')
 
         # Make sure not to match any non-redirector URL's from the urls module.
+        from .urls import urlpatterns
         for url in urlpatterns:
             if url.name != 'redirector' and url.regex.findall(keyword):
                 self.add_error(
