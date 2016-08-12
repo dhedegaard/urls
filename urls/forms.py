@@ -2,6 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django import forms
 from django.core.validators import URLValidator
+from django.core.urlresolvers import resolve
 from django.utils.text import slugify as slugify_func
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit
@@ -65,11 +66,10 @@ class UrlForm(forms.ModelForm):
             self.add_error('keyword', 'Keyword already exists.')
 
         # Make sure not to match any non-redirector URL's from the urls module.
-        from .urls import urlpatterns
-        for url in urlpatterns:
-            if url.name != 'redirector' and url.regex.findall(keyword):
-                self.add_error(
-                    'keyword', ('Keyword is used by an internal '
-                                'URL of the system'))
+        match = resolve('/%s' % keyword)
+        if match.url_name != 'redirector':
+            self.add_error(
+                'keyword', ('Keyword is used by an internal '
+                            'URL of the system'))
 
         return data

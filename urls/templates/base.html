@@ -22,11 +22,11 @@
                 {% block navbar %}{% endblock %}
                 <p class="navbar-text navbar-right">
                     Welcome
-                    {% if user.is_authenticated %}
-                    {% if user.first_name %}{{ user.first_name }}{% else %}{{ user }}{% endif %}
-                    (<a href="{% url 'logout' %}">Logout</a>)
+                    {{ request.user.username|default:'anonymous' }}
+                    {% if request.user.is_authenticated %}
+                        (<a href="{% url 'urls_logout' %}">Logout</a>)
                     {% else %}
-                    anonymous (<a href="{% url 'login' %}?next={% url 'list' %}">Login</a>)
+                        (<a href="{% url 'urls_login' %}?next={% url 'list' %}">Login</a>)
                     {% endif %}
                 </p>
             </div>

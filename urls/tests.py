@@ -5,6 +5,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.test.client import RequestFactory
 from django.http import HttpResponseServerError
+from django.core.urlresolvers import reverse
 from requests.exceptions import ConnectionError
 
 from .models import Url
@@ -30,32 +31,39 @@ class ViewsTestCase(TestCase):
         self.client.login(username='testuser', password='testpass')
 
     def test_list(self):
-        response = self.client.get('/')
+        response = self.client.get(reverse('list'))
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'list.html')
 
     def test_login(self):
-        response = self.client.get('/accounts/login/')
+        response = self.client.get(reverse('urls_login'))
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'login.html')
 
     def test_create_not_loggedin(self):
-        response = self.client.get('/create')
-        self.assertEquals(response.status_code, 302)
-        self.assertTrue(response['Location'].endswith(
-            '/accounts/login/?next=/create'))
+        response = self.client.get(reverse('create'))
+        self.assertRedirects(
+            response, reverse('urls_login') + '?next=' + reverse('create'),
+            fetch_redirect_response=False)
 
     def test_non_existing_keyword(self):
-        response = self.client.get('/non-existing-keyword')
+        response = self.client.get(reverse('redirector', kwargs={
+            'keyword': 'non-existing-keyword',
+        }))
         self.assertEquals(response.status_code, 404)
 
     def test_existing_keyword(self):
-        response = self.client.get('/test-keyword')
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response['Location'], 'http://www.google.com/')
+        response = self.client.get(reverse('redirector', kwargs={
+            'keyword': 'test-keyword',
+        }))
+        self.assertRedirects(
+            response, self.keyword.url,
+            fetch_redirect_response=False)
 
     def test_existing_proxy_keyword(self):
-        response = self.client.get('/test-proxy-keyword')
+        response = self.client.get(reverse('redirector', kwargs={
+            'keyword': 'test-proxy-keyword',
+        }))
         self.assertEquals(response.status_code, 200)
         self.assertTrue(response['Content-Type'], 'text/html')
 
@@ -64,51 +72,55 @@ class ViewsTestCase(TestCase):
         self.keyword.delete()
 
         self._login()
-        response = self.client.post('/%s/delete/' % keyword)
+        response = self.client.post(reverse('delete', kwargs={
+            'keyword': keyword,
+        }))
         self.assertEqual(response.status_code, 404)
 
     def test_delete_keywork(self):
         self._login()
-        response = self.client.post('/%s/delete/' % self.keyword.keyword)
+        response = self.client.post(reverse('delete', kwargs={
+            'keyword': self.keyword.keyword,
+        }))
 
         self.assertRedirects(response, '/')
         self.assertFalse(Url.objects.filter(pk=self.keyword.pk).exists())
 
     def test_create_keyword(self):
         self._login()
-        response = self.client.get('/create')
+        response = self.client.get(reverse('create'))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create.html')
 
     def test_create_keyword_submit(self):
         self._login()
-        response = self.client.post('/create', {
+        response = self.client.post(reverse('create'), {
             'keyword': 'test-keyword123',
             'url': 'http://www.testurl.com/',
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, reverse('list'))
         new_keyword = Url.objects.get(keyword='test-keyword123')
         self.assertEqual(new_keyword.url, 'http://www.testurl.com/')
         self.assertEqual(new_keyword.user, self.user)
 
     def test_create_keyword_submit_slugify(self):
         self._login()
-        response = self.client.post('/create', {
+        response = self.client.post(reverse('create'), {
             'keyword': 'many weird Characters !"##%"%.',
             'url': 'http://testsite.com/',
             'slugify': 'on',
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, reverse('list'))
         new_keyword = Url.objects.get(keyword='many-weird-characters')
         self.assertEqual(new_keyword.keyword, 'many-weird-characters')
         self.assertEqual(new_keyword.url, 'http://testsite.com/')
 
     def test_create_keyword_submit_already_exists(self):
         self._login()
-        response = self.client.post('/create', {
+        response = self.client.post(reverse('create'), {
             'keyword': self.keyword.keyword,
             'url': 'http://www.testurl.com/',
         })
@@ -119,7 +131,7 @@ class ViewsTestCase(TestCase):
 
     def test_create_keyword_submit_empty_url(self):
         self._login()
-        response = self.client.post('/create', {
+        response = self.client.post(reverse('create'), {
             'keyword': 'testkeyword123',
             'url': '',
         })
@@ -130,7 +142,7 @@ class ViewsTestCase(TestCase):
 
     def test_create_keyword_used_by_system(self):
         self._login()
-        response = self.client.post('/create', {
+        response = self.client.post(reverse('create'), {
             'keyword': 'create',
             'url': 'http://www.testurl.com/',
         })
@@ -142,27 +154,33 @@ class ViewsTestCase(TestCase):
 
     def test_edit_keyword(self):
         self._login()
-        response = self.client.get('/%s/edit/' % self.keyword.keyword)
+        response = self.client.get(reverse('edit', kwargs={
+            'keyword': self.keyword.keyword,
+        }))
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'create.html')
 
     def test_edit_keyword_submit(self):
         self._login()
-        response = self.client.post('/%s/edit/' % self.keyword.keyword, {
+        keyword_pk = self.keyword.pk
+        response = self.client.post(reverse('edit', kwargs={
+            'keyword': self.keyword.keyword,
+        }), {
             'keyword': 'new-testkeyword',
             'url': 'http://www.newtesturl.com/',
         })
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, reverse('list'))
         self.assertFalse(Url.objects.filter(pk=self.keyword.pk).exists())
         new_keyword = Url.objects.get(keyword='new-testkeyword')
-        self.assertEqual(new_keyword.keyword, 'new-testkeyword')
         self.assertEqual(new_keyword.url, 'http://www.newtesturl.com/')
 
     def test_edit_keyword_submit_already_exists(self):
         self._login()
-        response = self.client.post('/%s/edit/' % self.keyword.keyword, {
+        response = self.client.post(reverse('edit', kwargs={
+            'keyword': self.keyword.keyword,
+        }), {
             'keyword': self.keyword_proxy.keyword,
             'url': self.keyword.url,
         })
@@ -173,20 +191,20 @@ class ViewsTestCase(TestCase):
 
     def test_logout(self):
         self._login()
-        response = self.client.post('/logout')
+        response = self.client.post(reverse('urls_logout'))
 
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, reverse('list'))
         self.assertNotIn('_auth_user_id', self.client.session)
 
     def test_get_client_ip(self):
-        req = RequestFactory().get('/')
+        req = RequestFactory().get(reverse('list'))
         req.META['HTTP_X_FORWARDED_FOR'] = '127.0.0.1'
         req.META['REMOTE_ADDR'] = 'localhost'
 
         self.assertEqual(_get_client_ip(req), '127.0.0.1')
 
     def test_get_client_ip__no_forward(self):
-        req = RequestFactory().get('/')
+        req = RequestFactory().get(reverse('list'))
         req.META['REMOTE_ADDR'] = 'localhost'
 
         self.assertEqual(_get_client_ip(req), 'localhost')

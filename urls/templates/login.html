@@ -11,7 +11,7 @@
 <div class="alert alert-danger">{{ form.non_field_errors }}</div>
 {% endif %}
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="form-horizontal">
+<form method="post" action="{% url 'urls_login' %}" class="form-horizontal">
     {% csrf_token %}
     <div class="form-group{% if form.username.errors %} has-error{% endif %}">
         <label for="username" class="col-md-2 control-label">{{ form.username.label_tag }}</label>
