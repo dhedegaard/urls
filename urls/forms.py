@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django import forms
 from django.core.validators import URLValidator
-from django.core.urlresolvers import resolve
+from django.urls import resolve
 from django.utils.text import slugify as slugify_func
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Div, Submit

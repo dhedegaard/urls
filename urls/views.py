@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.html import format_html
@@ -48,7 +48,7 @@ def _get_client_ip(request):
 def list(request):
     urls = Url.objects.select_related().all()
 
-    if not request.user.is_authenticated():
+    if not request.user.is_authenticated:
         urls = urls.filter(public=True)
 
     return render(request, 'list.html', {

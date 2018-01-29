@@ -21,8 +21,9 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('proxy', models.BooleanField(default=False)),
                 ('public', models.BooleanField(default=False)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                                           db_column='user')),
+                ('user', models.ForeignKey(
+                    to=settings.AUTH_USER_MODEL,
+                    db_column='user', on_delete=models.SET_NULL, null=True)),
             ],
             options={
                 'ordering': ['keyword'],

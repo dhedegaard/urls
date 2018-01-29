@@ -9,7 +9,8 @@ class Url(models.Model):
     url = models.TextField(
         verbose_name='URL', max_length=2048, null=False)
     created = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, db_column='user')
+    user = models.ForeignKey(
+        User, db_column='user', on_delete=models.SET_NULL, null=True)
     proxy = models.BooleanField(
         verbose_name='Proxy requests', default=False)
     public = models.BooleanField(
