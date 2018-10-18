@@ -1,4 +1,4 @@
 Django==2.1.2
-requests==2.19.1
+requests==2.20.0
 mock==2.0.0
 django-crispy-forms==1.7.2
