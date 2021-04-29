@@ -7,12 +7,8 @@ from . import views
 
 urlpatterns = [
     url(r'^create$', views.create, name='create'),
-    url(r'^accounts/login/$', auth_views.LoginView, {
-        'template_name': 'login.html',
-    }, name='urls_login'),
-    url(r'^logout$', auth_views.LogoutView, {
-        'next_page': u'/',
-    }, name='urls_logout'),
+    url(r'^accounts/login/$', auth_views.LoginView.as_view(template_name='login.html'), name='urls_login'),
+    url(r'^logout$', auth_views.LogoutView.as_view(next_page='/'), name='urls_logout'),
     url(r'^$', views.list, name='list'),
     url(r'^(?P<keyword>.+)/delete/$', views.delete, name='delete'),
     url(r'^(?P<keyword>.+)/edit/$', views.create, name='edit'),
