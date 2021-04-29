@@ -7,10 +7,10 @@ from . import views
 
 urlpatterns = [
     url(r'^create$', views.create, name='create'),
-    url(r'^accounts/login/$', auth_views.login, {
+    url(r'^accounts/login/$', auth_views.LoginView, {
         'template_name': 'login.html',
     }, name='urls_login'),
-    url(r'^logout$', auth_views.logout, {
+    url(r'^logout$', auth_views.LogoutView, {
         'next_page': u'/',
     }, name='urls_logout'),
     url(r'^$', views.list, name='list'),
