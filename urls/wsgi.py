@@ -25,5 +25,8 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "urls.settings")
 # file. This includes Django's development server, if the WSGI_APPLICATION
 # setting points here.
 from django.core.wsgi import get_wsgi_application
+from django.contrib.staticfiles.handlers import StaticFilesHandler
 
-application = get_wsgi_application()
+# You're not really supposed to serve static files through the WSGI handler, but
+# it keeps things simple.
+application = StaticFilesHandler(get_wsgi_application())
