@@ -2,7 +2,7 @@
 import os
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-DEBUG = 'PRODUCTION' in os.environ and os.environ['PRODUCTION'] != ''
+DEBUG = 'PRODUCTION' not in os.environ
 
 ADMINS = (
     ('Dennis Hedegaard', 'dennis@dhedegaard.dk'),
@@ -31,8 +31,10 @@ if 'DATABASE_URL' in os.environ:
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
-ALLOWED_HOSTS = ['u.neo2k.dk', 'urls.neo2k.dk',
+ALLOWED_HOSTS = ['127.0.0.1', 'u.neo2k.dk', 'urls.neo2k.dk',
                  'u.dhedegaard.dk', 'urls.dhedegaard.dk', 'localhost']
+if 'ALLOWED_HOSTS' in os.environ:
+    ALLOWED_HOSTS = os.environ['ALLOWED_HOSTS'].split(',')
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
