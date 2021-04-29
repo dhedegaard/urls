@@ -20,6 +20,15 @@ DATABASES = {
     }
 }
 
+# If there's a DATABASE_URL environ variable, expect it to be a postgres URL.
+if 'DATABASE_URL' in os.environ:
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config(
+        default=os.environ['DATABASE_URL'],
+        conn_max_age=600,
+        ssl_require=True,
+    )
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['u.neo2k.dk', 'urls.neo2k.dk',
