@@ -21,7 +21,7 @@ DATABASES = {
 }
 
 # If there's a DATABASE_URL environ variable, expect it to be a postgres URL.
-if 'DATABASE_URL' in os.environ:
+if 'DATABASE_URL' in os.environ and os.environ['DATABASE_URL']:
     import dj_database_url
     DATABASES['default'] = dj_database_url.config(
         default=os.environ['DATABASE_URL'],
