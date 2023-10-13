@@ -39,20 +39,6 @@ def _add_event_message(request: HttpRequest, keyword: str, event: str) -> None:
     )
 
 
-def _get_client_ip(request: HttpRequest):
-    """
-    Returns the client IP address from a request.UrlForm
-
-    :param request: A django response object.
-    :returns: IP of the client of the the request, as a string.
-    """
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0]
-    else:
-        return request.META.get("REMOTE_ADDR")
-
-
 def list(request: HttpRequest) -> HttpResponse:
     urls = Url.objects.select_related().all()
 
