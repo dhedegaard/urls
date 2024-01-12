@@ -3,5 +3,5 @@ requests==2.31.0
 mock==3.0.5
 django-crispy-forms==1.14.0
 dj_database_url==2.1.0
-psycopg2-binary==2.8.6
+psycopg2-binary==2.9.9
 gunicorn==21.2.0
