@@ -33,12 +33,12 @@ class ViewsTestCase(TestCase):
 
     def test_list(self):
         response = self.client.get(reverse("list"))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "list.html")
 
     def test_login(self):
         response = self.client.get(reverse("urls_login"))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "login.html")
 
     def test_create_not_loggedin(self):
@@ -58,7 +58,7 @@ class ViewsTestCase(TestCase):
                 },
             )
         )
-        self.assertEquals(response.status_code, 404)
+        self.assertEqual(response.status_code, 404)
 
     def test_existing_keyword(self):
         response = self.client.get(
@@ -80,7 +80,7 @@ class ViewsTestCase(TestCase):
                 },
             )
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue(response["Content-Type"], "text/html")
 
     def test_delete_nonexistant_keyword(self):
