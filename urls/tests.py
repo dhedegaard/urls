@@ -1,14 +1,16 @@
 from __future__ import absolute_import, unicode_literals
 
+from typing import cast
 from unittest import mock
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.http import HttpResponseServerError
 from django.urls import reverse
 from requests.exceptions import ConnectionError
+from django.forms import Form
 
 from .models import Url
-from .views import _redirect_proxy
+from .views import _redirect_proxy  # type: ignore
 
 
 class ViewsTestCase(TestCase):
@@ -161,7 +163,11 @@ class ViewsTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "form", "keyword", "Keyword already exists.")
+        self.assertFormError(
+            cast(Form, response.context["form"]),
+            "keyword",
+            ["Keyword already exists."],
+        )  # type: ignore
 
     def test_create_keyword_submit_empty_url(self):
         self._login()
@@ -174,7 +180,9 @@ class ViewsTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "form", "url", "This field is required.")
+        self.assertFormError(
+            cast(Form, response.context["form"]), "url", "This field is required."
+        )  # type: ignore
 
     def test_create_keyword_used_by_system(self):
         self._login()
@@ -188,11 +196,10 @@ class ViewsTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFormError(
-            response,
-            "form",
+            cast(Form, response.context["form"]),
             "keyword",
-            "Keyword is used by an internal URL of the " "system",
-        )
+            "Keyword is used by an internal URL of the system",
+        )  # type: ignore
 
     def test_edit_keyword(self):
         self._login()
@@ -244,7 +251,11 @@ class ViewsTestCase(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertFormError(response, "form", "keyword", "Keyword already exists.")
+        self.assertFormError(
+            cast(Form, response.context["form"]),
+            "keyword",
+            "Keyword already exists.",
+        )  # type: ignore
 
     def test_logout(self):
         self._login()
@@ -254,9 +265,9 @@ class ViewsTestCase(TestCase):
         self.assertNotIn("_auth_user_id", self.client.session)
 
     @mock.patch("urls.views.requests")
-    def test_redirector__exception(self, requests_patch):
-        requests_patch.get.side_effect = ConnectionError("something bad happened")
-        requests_patch.exceptions.ConnectionError = ConnectionError
+    def test_redirector__exception(self, requests_patch):  # type: ignore
+        requests_patch.get.side_effect = ConnectionError("something bad happened")  # type: ignore
+        requests_patch.exceptions.ConnectionError = ConnectionError  # type: ignore
 
         self.assertTrue(
             isinstance(_redirect_proxy("http://testserver/"), HttpResponseServerError)
