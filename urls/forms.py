@@ -52,7 +52,7 @@ class UrlForm(forms.ModelForm):
     def clean(self):
         super(UrlForm, self).clean()
         if any(self.errors):
-            return
+            return self.errors
         data = self.cleaned_data
         keyword = data["keyword"]
 
