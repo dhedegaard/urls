@@ -1,5 +1,8 @@
 # Django settings for urls project.
+
+from __future__ import annotations
 import os
+from typing import Dict, cast
 
 ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DEBUG: bool = "PRODUCTION" not in os.environ
@@ -22,10 +25,13 @@ DATABASES = {
 if "DATABASE_URL" in os.environ and os.environ["DATABASE_URL"]:
     import dj_database_url
 
-    DATABASES["default"] = dj_database_url.config(
-        default=os.environ["DATABASE_URL"],
-        conn_max_age=600,
-        ssl_require=True,
+    DATABASES["default"] = cast(
+        Dict[str, str],
+        dj_database_url.config(  # type: ignore
+            default=os.environ["DATABASE_URL"],
+            conn_max_age=600,
+            ssl_require=True,
+        ),
     )
 
 # Hosts/domain names that are valid for this site; required if DEBUG is False
