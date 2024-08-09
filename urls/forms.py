@@ -31,8 +31,8 @@ class UrlForm(forms.ModelForm):
             "keyword": forms.TextInput,
         }
 
-    def __init__(self, *args, **kwargs):
-        super(UrlForm, self).__init__(*args, **kwargs)
+    def __init__(self, *args, **kwargs):  # type: ignore
+        super(UrlForm, self).__init__(*args, **kwargs)  # type: ignore
         self.helper = FormHelper()
         self.helper.form_class = "form-horizontal"
         self.helper.label_class = "col-sm-2"
