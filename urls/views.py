@@ -11,6 +11,7 @@ from django.views.decorators.http import require_POST
 from django.http import (
     HttpRequest,
     HttpResponse,
+    HttpResponseNotFound,
     HttpResponseServerError,
 )
 from django.db import transaction
@@ -96,13 +97,18 @@ def create(request: HttpRequest, keyword: Optional[str] = None):
             form = UrlForm(instance=Url.objects.get(keyword=keyword))
         else:
             form = UrlForm()
+
+    url_name: str | None = getattr(request.resolver_match, "url_name", "")
+    if url_name is None or len(url_name) == 0:
+        return HttpResponseNotFound()
+
     return render(
         request,
         "create.html",
         {
             "form": form,
             "redirect_count": Url.objects.all().count(),
-            "title": request.resolver_match.url_name.title(),
+            "title": url_name.title(),
             "keyword": keyword,
         },
     )
