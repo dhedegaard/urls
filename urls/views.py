@@ -98,8 +98,8 @@ def create(request: HttpRequest, keyword: Optional[str] = None):
         else:
             form = UrlForm()
 
-    url_name: str | None = getattr(request.resolver_match, "url_name", "")
-    if url_name is None or len(url_name) == 0:
+    url_name: Optional[str] = getattr(request.resolver_match, "url_name", "")
+    if not isinstance(url_name, str) or len(url_name) == 0:
         return HttpResponseNotFound()
 
     return render(
