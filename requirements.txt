@@ -1,6 +1,6 @@
 Django==4.2.15
 requests==2.32.2
 django-crispy-forms==1.14.0
-dj_database_url==2.1.0
+dj_database_url==2.2.0
 psycopg2-binary==2.9.9
 gunicorn==22.0.0
