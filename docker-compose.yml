@@ -1,0 +1,8 @@
+services:
+  urls:
+    build: .
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - PORT=${PORT}
