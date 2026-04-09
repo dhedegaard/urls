@@ -1,4 +1,4 @@
-Django==4.2.29
+Django==4.2.30
 requests==2.33.0
 django-crispy-forms==1.14.0
 dj_database_url==2.2.0
