@@ -21,7 +21,7 @@ def _add_event_message(request: HttpRequest, keyword: str, event: str) -> None:
         request,
         format_html(
             'The keyword <b><a href="{0}" target="_blank">{1}</a>'
-            "</b> has been <b>{2}</b> succesfully!",
+            "</b> has been <b>{2}</b> successfully!",
             reverse("redirector", args=(keyword,)),
             keyword,
             event,
