@@ -55,7 +55,9 @@ STATICFILES_FINDERS = (
     "django.contrib.staticfiles.finders.AppDirectoriesFinder",
 )
 
-SECRET_KEY = "jw-_tia*(q^e^pb^5n7q492sxpm%k*xg!0ya7uuh$%htpd7*7g"
+SECRET_KEY = os.environ.get(
+    "SECRET_KEY", "jw-_tia*(q^e^pb^5n7q492sxpm%k*xg!0ya7uuh$%htpd7*7g"
+)
 
 MIDDLEWARE = (
     "django.middleware.common.CommonMiddleware",
