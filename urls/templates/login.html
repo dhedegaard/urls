@@ -17,7 +17,7 @@
         <label for="username" class="col-md-2 control-label">{{ form.username.label_tag }}</label>
 
         <div class="col-md-4">
-            <input type="text" id="username" name="username" class="form-control"
+            <input type="text" id="username" name="username" class="form-control" autofocus
             value="{{ form.username.value|default:'' }}"/>
         </div>
         {% if form.username.errors %}
