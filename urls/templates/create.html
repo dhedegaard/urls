@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load crispy_forms_tags %}
 {% block navbar %}
 <ul class="navbar-nav nav">
     <li>
@@ -8,5 +7,50 @@
 </ul>
 {% endblock %}
 {% block content %}
-{% crispy form %}
+<form method="post" class="form-horizontal" role="form">
+    {% csrf_token %}
+    <div class="form-group{% if form.keyword.errors %} has-error{% endif %}">
+        <label for="{{ form.keyword.id_for_label }}" class="col-sm-2 control-label">{{ form.keyword.label }}</label>
+        <div class="col-sm-6">
+            {{ form.keyword }}
+            {% for error in form.keyword.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+    <div class="form-group{% if form.slugify.errors %} has-error{% endif %}">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>{{ form.slugify }} {{ form.slugify.label }}</label>
+            </div>
+            {% for error in form.slugify.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+    <div class="form-group{% if form.url.errors %} has-error{% endif %}">
+        <label for="{{ form.url.id_for_label }}" class="col-sm-2 control-label">{{ form.url.label }}</label>
+        <div class="col-sm-6">
+            {{ form.url }}
+            {% for error in form.url.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+    <div class="form-group{% if form.proxy.errors %} has-error{% endif %}">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>{{ form.proxy }} {{ form.proxy.label }}</label>
+            </div>
+            {% for error in form.proxy.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+    <div class="form-group{% if form.public.errors %} has-error{% endif %}">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>{{ form.public }} {{ form.public.label }}</label>
+            </div>
+            {% for error in form.public.errors %}<span class="help-block">{{ error }}</span>{% endfor %}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-6">
+            <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+</form>
 {% endblock %}

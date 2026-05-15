@@ -4,9 +4,6 @@ from django import forms
 from django.core.validators import URLValidator
 from django.urls import resolve
 from django.utils.text import slugify as slugify_func
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit
-
 from .models import Url
 
 
@@ -15,6 +12,7 @@ class UrlForm(forms.ModelForm):
         required=True,
         max_length=Url._meta.get_field("url").max_length,
         validators=[URLValidator()],
+        widget=forms.TextInput(attrs={"class": "form-control"}),
     )
     slugify = forms.BooleanField(label="Slugify the keyword ?", required=False)
 
@@ -28,26 +26,8 @@ class UrlForm(forms.ModelForm):
             "public",
         ]
         widgets = {
-            "keyword": forms.TextInput,
+            "keyword": forms.TextInput(attrs={"class": "form-control"}),
         }
-
-    def __init__(self, *args, **kwargs):  # type: ignore
-        super(UrlForm, self).__init__(*args, **kwargs)  # type: ignore
-        self.helper = FormHelper()
-        self.helper.form_class = "form-horizontal"
-        self.helper.label_class = "col-sm-2"
-        self.helper.field_class = "col-sm-6"
-        self.helper.layout = Layout(
-            "keyword",
-            Div("slugify", css_class="col-sm-offset-2 col-sm-10"),
-            "url",
-            Div("proxy", css_class="col-sm-offset-2 col-sm-10"),
-            Div("public", css_class="col-sm-offset-2 col-sm-10"),
-            Div(
-                Submit("submit", "Save", css_class="btn-primary"),
-                css_class="col-sm-offset-2 col-sm-6",
-            ),
-        )
 
     def clean(self):
         super(UrlForm, self).clean()

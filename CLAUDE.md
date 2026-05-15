@@ -6,23 +6,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A minimal Django app that maps short keywords to URLs, supporting HTTP 302 redirects and optional server-side proxying of responses. Authentication is required to manage redirects; unauthenticated users can only see/use keywords marked `public`.
 
+## Dependencies
+
+Dependencies are managed with [uv](https://docs.astral.sh/uv/) via `pyproject.toml` and locked in `uv.lock`.
+
 ## Commands
 
 ```bash
 # Run tests
-python manage.py test
+uv run manage.py test
 
 # Run tests with coverage
-coverage run manage.py test && coverage report
+uv run coverage run manage.py test && uv run coverage report
 
 # Run dev server (uses SQLite by default)
-python manage.py runserver
+uv run manage.py runserver
 
 # Apply migrations
-python manage.py migrate
+uv run manage.py migrate
 
 # Run a single test
-python manage.py test urls.tests.ViewsTestCase.test_list
+uv run manage.py test urls.tests.ViewsTestCase.test_list
 ```
 
 ## Architecture

@@ -4,12 +4,14 @@ ENV PORT=8080 \
   DATABASE_URL=''
 EXPOSE ${PORT}
 
-COPY requirements.txt ./
-RUN pip install -r requirements.txt
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev
 
 COPY . ./
-RUN python manage.py test && \
-  python manage.py collectstatic -c --noinput
+RUN uv run manage.py test && \
+  uv run manage.py collectstatic -c --noinput
 
-CMD python manage.py migrate && \
-  gunicorn urls.wsgi
+CMD uv run manage.py migrate && \
+  uv run gunicorn urls.wsgi

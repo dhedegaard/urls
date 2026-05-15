@@ -125,8 +125,7 @@ INSTALLED_APPS = (
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "crispy_forms",
-    "urls",
+"urls",
 )
 
 # A sample logging configuration. The only tangible logging
@@ -155,8 +154,6 @@ LOGGING = {
 }
 
 TEST_RUNNER = "django.test.runner.DiscoverRunner"
-
-CRISPY_TEMPLATE_PACK = "bootstrap3"
 
 TEMPLATES = [
     {
