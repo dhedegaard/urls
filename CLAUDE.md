@@ -50,7 +50,7 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 **Edit behavior:** The `create` view doubles as edit (routed at `<keyword>/edit/`). If the keyword itself is renamed during an edit, the old `Url` record is deleted after the new one is saved.
 
-**Tests:** All tests are in `ViewsTestCase` in `urls/tests.py`. The proxy failure test mocks `urls.views.requests` (the whole module) to simulate a `ConnectionError`. The proxy success test (`test_existing_proxy_keyword`) makes a real outbound HTTP request and will fail if the network is unavailable.
+**Tests:** All tests are in `ViewsTestCase` in `urls/tests.py`. Both proxy tests mock `urls.views.requests` (the whole module) — the success test stubs a minimal response, the failure test sets a `ConnectionError` side effect.
 
 ## Configuration
 

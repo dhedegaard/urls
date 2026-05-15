@@ -72,7 +72,10 @@ class ViewsTestCase(TestCase):
         )
         self.assertRedirects(response, self.keyword.url, fetch_redirect_response=False)
 
-    def test_existing_proxy_keyword(self):
+    @mock.patch("urls.views.requests")
+    def test_existing_proxy_keyword(self, requests_patch):  # type: ignore
+        requests_patch.get.return_value.text = "<html></html>"
+        requests_patch.get.return_value.headers = {"Content-Type": "text/html"}
         response = self.client.get(
             reverse(
                 "redirector",
