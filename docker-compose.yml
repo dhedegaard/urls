@@ -2,7 +2,8 @@ services:
   urls:
     build: .
     restart: unless-stopped
-    network_mode: host
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - PORT=${PORT:-8080}
