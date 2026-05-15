@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from django import forms
 from django.core.validators import URLValidator
 from django.urls import resolve
@@ -30,7 +28,7 @@ class UrlForm(forms.ModelForm):
         }
 
     def clean(self):
-        super(UrlForm, self).clean()
+        super().clean()
         if any(self.errors):
             return self.errors
         data = self.cleaned_data
@@ -50,7 +48,7 @@ class UrlForm(forms.ModelForm):
             self.add_error("keyword", "Keyword already exists.")
 
         # Make sure not to match any non-redirector URL's from the urls module.
-        match = resolve("/%s" % keyword)
+        match = resolve(f"/{keyword}")
         if match.url_name != "redirector":
             self.add_error(
                 "keyword", ("Keyword is used by an internal " "URL of the system")

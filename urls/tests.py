@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals
-
 from typing import cast
 from unittest import mock
 from django.test import TestCase
