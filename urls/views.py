@@ -1,5 +1,3 @@
-from typing import Optional
-
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
@@ -69,11 +67,11 @@ def delete(request: HttpRequest, keyword: str) -> HttpResponse:
 
 @login_required
 @transaction.atomic
-def create(request: HttpRequest, keyword: Optional[str] = None):
+def create(request: HttpRequest, keyword: str | None = None):
     if request.method == "POST":
         if keyword is not None:
             # If we're editing, make sure to provide the existing instance.
-            form = UrlForm(request.POST, instance=Url.objects.get(keyword=keyword))
+            form = UrlForm(request.POST, instance=get_object_or_404(Url, keyword=keyword))
         else:
             # Save a new form.
             form = UrlForm(request.POST)
@@ -93,11 +91,11 @@ def create(request: HttpRequest, keyword: Optional[str] = None):
             return redirect("list")
     else:
         if keyword is not None:
-            form = UrlForm(instance=Url.objects.get(keyword=keyword))
+            form = UrlForm(instance=get_object_or_404(Url, keyword=keyword))
         else:
             form = UrlForm()
 
-    url_name: Optional[str] = getattr(request.resolver_match, "url_name", "")
+    url_name: str | None = getattr(request.resolver_match, "url_name", "")
     if not isinstance(url_name, str) or len(url_name) == 0:
         return HttpResponseNotFound()
 
@@ -123,7 +121,7 @@ def _redirect_proxy(url: str) -> HttpResponse:
     )
 
 
-def redirector(_request: HttpRequest, keyword: Optional[str]) -> HttpResponse:
+def redirector(_request: HttpRequest, keyword: str | None) -> HttpResponse:
     url: Url = get_object_or_404(Url, keyword=keyword)
     if url.proxy:
         return _redirect_proxy(url.url)
