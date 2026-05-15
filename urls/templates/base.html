@@ -20,15 +20,15 @@
             </div>
             <div class="collapse navbar-collapse">
                 {% block navbar %}{% endblock %}
-                <p class="navbar-text navbar-right">
+                <span class="navbar-text navbar-right">
                     Welcome
                     {{ request.user.username|default:'anonymous' }}
                     {% if request.user.is_authenticated %}
-                        (<a href="{% url 'urls_logout' %}">Logout</a>)
+                        (<form method="post" action="{% url 'urls_logout' %}" style="margin:0;padding:0;display:inline">{% csrf_token %}<button type="submit" class="btn btn-link navbar-btn" style="padding:0;vertical-align:baseline">Logout</button></form>)
                     {% else %}
                         (<a href="{% url 'urls_login' %}?next={% url 'list' %}">Login</a>)
                     {% endif %}
-                </p>
+                </span>
             </div>
         </div>
     </nav>

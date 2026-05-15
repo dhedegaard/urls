@@ -6,6 +6,7 @@ from typing import Dict, cast
 
 ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DEBUG: bool = "PRODUCTION" not in os.environ
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 ADMINS = (("Dennis Hedegaard", "dennis@dhedegaard.dk"),)
 
