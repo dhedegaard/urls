@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 from django.contrib.auth import views as auth_views
 from django.urls import URLPattern, re_path
 
