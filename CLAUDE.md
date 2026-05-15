@@ -33,11 +33,13 @@ uv run manage.py test urls.tests.ViewsTestCase.test_list
 
 The entire app lives in the `urls/` package (which is also the Django project package — `urls.settings`, `urls.urls`, `urls.wsgi`).
 
-**Model:** `Url` in `urls/models.py` — `keyword` is the primary key (text), `url` is the redirect target, `proxy` controls server-side fetch vs. 302, `public` controls unauthenticated visibility.
+**Model:** `Url` in `urls/models.py` — `keyword` is the primary key (text), `url` is the redirect target, `proxy` controls server-side fetch vs. 302, `public` controls visibility in the list view (unauthenticated users only see public entries in the list, but the redirector itself does not check `public` — any keyword works if you know it).
 
 **Request flow:** `urls/urls.py` routes all paths. A catch-all `(?P<keyword>.+)` at the bottom hits `views.redirector`, which either proxies (fetches and returns content) or 302-redirects. Paths like `create`, `logout`, `<keyword>/delete/`, `<keyword>/edit/` are matched before the catch-all.
 
-**Form validation:** `UrlForm.clean()` in `urls/forms.py` resolves the keyword as a URL path and rejects it if it matches any non-`redirector` named URL — this prevents keywords from shadowing internal routes.
+**Form validation:** `UrlForm.clean()` in `urls/forms.py` resolves the keyword as a URL path and rejects it if it matches any non-`redirector` named URL — this prevents keywords from shadowing internal routes. A `slugify` checkbox on the form auto-converts the keyword to a slug before saving.
+
+**Edit behavior:** The `create` view doubles as edit (routed at `<keyword>/edit/`). If the keyword itself is renamed during an edit, the old `Url` record is deleted after the new one is saved.
 
 ## Configuration
 
