@@ -16,7 +16,7 @@ Dependencies are managed with [uv](https://docs.astral.sh/uv/) via `pyproject.to
 # Run tests
 uv run manage.py test
 
-# Run tests with coverage
+# Run tests with coverage (requires coverage in dev deps: uv add --dev coverage)
 uv run coverage run manage.py test && uv run coverage report
 
 # Run dev server (uses SQLite by default)
@@ -27,6 +27,10 @@ uv run manage.py migrate
 
 # Run a single test
 uv run manage.py test urls.tests.ViewsTestCase.test_list
+
+# Lint and format
+uv run ruff check .
+uv run ruff format .
 ```
 
 ## Architecture
@@ -43,7 +47,7 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 **Edit behavior:** The `create` view doubles as edit (routed at `<keyword>/edit/`). If the keyword itself is renamed during an edit, the old `Url` record is deleted after the new one is saved.
 
-**Tests:** All tests are in `ViewsTestCase` in `urls/tests.py`. The proxy test mocks `urls.views.requests` (the whole module) to simulate a `ConnectionError`.
+**Tests:** All tests are in `ViewsTestCase` in `urls/tests.py`. The proxy failure test mocks `urls.views.requests` (the whole module) to simulate a `ConnectionError`. The proxy success test (`test_existing_proxy_keyword`) makes a real outbound HTTP request and will fail if the network is unavailable.
 
 ## Configuration
 
