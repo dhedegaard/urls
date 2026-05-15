@@ -41,8 +41,6 @@ def url_list(request: HttpRequest) -> HttpResponse:
         {
             "urls": urls,
             "title": "List",
-            "changed_keyword": request.GET.get("changed_keyword"),
-            "changed_event_name": request.GET.get("changed_event_name"),
         },
     )
 
