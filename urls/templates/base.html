@@ -20,15 +20,14 @@
             </div>
             <div class="collapse navbar-collapse">
                 {% block navbar %}{% endblock %}
-                <span class="navbar-text navbar-right">
-                    Welcome
-                    {{ request.user.username|default:'anonymous' }}
-                    {% if request.user.is_authenticated %}
-                        (<form method="post" action="{% url 'urls_logout' %}" style="margin:0;padding:0;display:inline">{% csrf_token %}<button type="submit" class="btn btn-link navbar-btn" style="padding:0;vertical-align:baseline">Logout</button></form>)
-                    {% else %}
-                        (<a href="{% url 'urls_login' %}?next={% url 'list' %}">Login</a>)
-                    {% endif %}
-                </span>
+                {% if request.user.is_authenticated %}
+                    <form method="post" action="{% url 'urls_logout' %}" class="navbar-form navbar-right">
+                        {% csrf_token %}
+                        <p class="navbar-text" style="margin:0">Welcome {{ request.user.username }} (<button type="submit" class="btn btn-link" style="padding:0;vertical-align:baseline;font-size:inherit">Logout</button>)</p>
+                    </form>
+                {% else %}
+                    <p class="navbar-text navbar-right">Welcome {{ request.user.username|default:'anonymous' }} (<a href="{% url 'urls_login' %}?next={% url 'list' %}">Login</a>)</p>
+                {% endif %}
             </div>
         </div>
     </nav>
