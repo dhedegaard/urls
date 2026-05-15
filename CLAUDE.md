@@ -35,17 +35,22 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 **Model:** `Url` in `urls/models.py` — `keyword` is the primary key (text), `url` is the redirect target, `proxy` controls server-side fetch vs. 302, `public` controls visibility in the list view (unauthenticated users only see public entries in the list, but the redirector itself does not check `public` — any keyword works if you know it).
 
-**Request flow:** `urls/urls.py` routes all paths. A catch-all `(?P<keyword>.+)` at the bottom hits `views.redirector`, which either proxies (fetches and returns content) or 302-redirects. Paths like `create`, `logout`, `<keyword>/delete/`, `<keyword>/edit/` are matched before the catch-all.
+**Request flow:** `urls/urls.py` routes all paths. A catch-all `(?P<keyword>.+)` at the bottom hits `views.redirector`, which either proxies (fetches and returns content via a synchronous `requests.get()` with no timeout) or 302-redirects. Paths like `create`, `logout`, `<keyword>/delete/`, `<keyword>/edit/` are matched before the catch-all.
+
+**Named URL patterns:** `list`, `create`, `edit`, `delete`, `redirector`, `urls_login`, `urls_logout`. The login/logout names use the `urls_` prefix to avoid clashing with Django's built-in auth URL names.
 
 **Form validation:** `UrlForm.clean()` in `urls/forms.py` resolves the keyword as a URL path and rejects it if it matches any non-`redirector` named URL — this prevents keywords from shadowing internal routes. A `slugify` checkbox on the form auto-converts the keyword to a slug before saving.
 
 **Edit behavior:** The `create` view doubles as edit (routed at `<keyword>/edit/`). If the keyword itself is renamed during an edit, the old `Url` record is deleted after the new one is saved.
+
+**Tests:** All tests are in `ViewsTestCase` in `urls/tests.py`. The proxy test mocks `urls.views.requests` (the whole module) to simulate a `ConnectionError`.
 
 ## Configuration
 
 - **Database:** SQLite (`urls.db`) by default; set `DATABASE_URL` env var for PostgreSQL (production).
 - **Debug mode:** `DEBUG=True` unless `PRODUCTION` env var is set.
 - **ALLOWED_HOSTS:** Defaults to localhost + dhedegaard.dk domains; override with comma-separated `ALLOWED_HOSTS` env var.
+- **Port:** Set `PORT` env var to control the gunicorn port (used in docker-compose).
 
 ## Deployment
 
