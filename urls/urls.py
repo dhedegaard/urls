@@ -5,7 +5,11 @@ from . import views
 
 urlpatterns: list[URLPattern] = [
     path("create", views.create, name="create"),
-    path("accounts/login/", auth_views.LoginView.as_view(template_name="login.html"), name="urls_login"),
+    path(
+        "accounts/login/",
+        auth_views.LoginView.as_view(template_name="login.html"),
+        name="urls_login",
+    ),
     path("logout", auth_views.LogoutView.as_view(next_page="/"), name="urls_logout"),
     path("", views.url_list, name="list"),
     re_path(r"^(?P<keyword>.+)/delete/$", views.delete, name="delete"),

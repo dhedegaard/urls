@@ -2,6 +2,7 @@ from django import forms
 from django.core.validators import URLValidator
 from django.urls import resolve
 from django.utils.text import slugify as slugify_func
+
 from .models import Url
 
 

@@ -1,11 +1,12 @@
 from typing import cast
 from unittest import mock
-from django.test import TestCase
+
 from django.contrib.auth.models import User
+from django.forms import Form
 from django.http import HttpResponseServerError
+from django.test import TestCase
 from django.urls import reverse
 from requests.exceptions import ConnectionError
-from django.forms import Form
 
 from .models import Url
 from .views import _redirect_proxy  # type: ignore

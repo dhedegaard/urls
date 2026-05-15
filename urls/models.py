@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 
 
 class Url(models.Model):
@@ -15,7 +15,10 @@ class Url(models.Model):
         verbose_name='Public redirect', default=False)
 
     def __str__(self):
-        return f'keyword: {self.keyword}, url: {self.url}, proxy: {self.proxy}, public: {self.public}'
+        return (
+            f"keyword: {self.keyword}, url: {self.url}, "
+            f"proxy: {self.proxy}, public: {self.public}"
+        )
 
     class Meta:
         ordering = ['keyword']

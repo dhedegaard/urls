@@ -1,16 +1,16 @@
 import requests
-from django.shortcuts import render, redirect, get_object_or_404
-from django.urls import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.utils.html import format_html
-from django.views.decorators.http import require_POST
+from django.db import transaction
 from django.http import (
     HttpRequest,
     HttpResponse,
     HttpResponseServerError,
 )
-from django.db import transaction
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.html import format_html
+from django.views.decorators.http import require_POST
 
 from .forms import UrlForm
 from .models import Url
@@ -63,7 +63,9 @@ def create(request: HttpRequest, keyword: str | None = None):
     if request.method == "POST":
         if keyword is not None:
             # If we're editing, make sure to provide the existing instance.
-            form = UrlForm(request.POST, instance=get_object_or_404(Url, keyword=keyword))
+            form = UrlForm(
+                request.POST, instance=get_object_or_404(Url, keyword=keyword)
+            )
         else:
             # Save a new form.
             form = UrlForm(request.POST)
