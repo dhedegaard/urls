@@ -105,7 +105,7 @@ def create(request: HttpRequest, keyword: str | None = None) -> HttpResponse:
 
 def _redirect_proxy(url: str) -> HttpResponse:
     try:
-        response: requests.Response = requests.get(url)
+        response: requests.Response = requests.get(url, timeout=15)
     except requests.exceptions.ConnectionError as e:
         return HttpResponseServerError(str(e))
     return HttpResponse(
