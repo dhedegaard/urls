@@ -16,7 +16,7 @@ Dependencies are managed with [uv](https://docs.astral.sh/uv/) via `pyproject.to
 # Run tests
 uv run manage.py test
 
-# Run tests with coverage (requires coverage in dev deps: uv add --dev coverage)
+# Run tests with coverage
 uv run coverage run manage.py test && uv run coverage report
 
 # Run dev server (uses SQLite by default)
@@ -42,7 +42,7 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 **Model:** `Url` in `urls/models.py` — `keyword` is the primary key (text), `url` is the redirect target, `proxy` controls server-side fetch vs. 302, `public` controls visibility in the list view (unauthenticated users only see public entries in the list, but the redirector itself does not check `public` — any keyword works if you know it).
 
-**Request flow:** `urls/urls.py` routes all paths. A catch-all `(?P<keyword>.+)` at the bottom hits `views.redirector`, which either proxies (fetches and returns content via a synchronous `requests.get()` with no timeout) or 302-redirects. Paths like `create`, `logout`, `<keyword>/delete/`, `<keyword>/edit/` are matched before the catch-all.
+**Request flow:** `urls/urls.py` routes all paths. A catch-all `(?P<keyword>.+)` at the bottom hits `views.redirector`, which either proxies (fetches and returns content via `requests.get()` with a 15-second timeout) or 302-redirects. Paths like `create`, `logout`, `<keyword>/delete/`, `<keyword>/edit/` are matched before the catch-all.
 
 **Named URL patterns:** `list`, `create`, `edit`, `delete`, `redirector`, `urls_login`, `urls_logout`. The login/logout names use the `urls_` prefix to avoid clashing with Django's built-in auth URL names.
 
@@ -56,6 +56,7 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 - **Database:** SQLite (`urls.db`) by default; set `DATABASE_URL` env var for PostgreSQL (production).
 - **Debug mode:** `DEBUG=True` unless `PRODUCTION` env var is set.
+- **Secret key:** Read from `SECRET_KEY` env var; falls back to a hardcoded dev default.
 - **ALLOWED_HOSTS:** Defaults to localhost + dhedegaard.dk domains; override with comma-separated `ALLOWED_HOSTS` env var.
 - **Port:** Set `PORT` env var to control the gunicorn port (used in docker-compose).
 
