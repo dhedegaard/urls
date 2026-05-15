@@ -11,6 +11,7 @@ RUN uv sync --frozen
 
 COPY . ./
 RUN uv run ruff check . && \
+  uv run pyright . && \
   uv run manage.py test && \
   uv run manage.py collectstatic -c --noinput
 

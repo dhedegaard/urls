@@ -11,7 +11,7 @@ from .models import Url
 class UrlForm(forms.ModelForm):
     url = forms.CharField(
         required=True,
-        max_length=Url._meta.get_field("url").max_length,
+        max_length=Url._meta.get_field("url").max_length,  # type: ignore[union-attr]
         validators=[URLValidator()],
         widget=forms.TextInput(attrs={"class": "form-control"}),
     )

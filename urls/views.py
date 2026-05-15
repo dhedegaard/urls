@@ -89,6 +89,8 @@ def create(request: HttpRequest, keyword: str | None = None) -> HttpResponse:
         else:
             form = UrlForm()
 
+    assert request.resolver_match is not None
+    assert request.resolver_match.url_name is not None
     return render(
         request,
         "create.html",

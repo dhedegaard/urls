@@ -14,8 +14,17 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "django-stubs==5.2.*",
+    "pyright>=1.1.409",
     "ruff>=0.15.13",
+    "types-requests>=2.33.0.20260513",
 ]
+
+[tool.pyright]
+pythonVersion = "3.14"
+venvPath = "."
+venv = ".venv"
+exclude = [".venv/**", "urls/migrations/**"]
 
 [tool.ruff]
 target-version = "py314"
