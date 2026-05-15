@@ -31,6 +31,9 @@ uv run manage.py test urls.tests.ViewsTestCase.test_list
 # Lint and format
 uv run ruff check .
 uv run ruff format .
+
+# Type check
+uv run pyright .
 ```
 
 ## Architecture
@@ -58,4 +61,4 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 
 ## Deployment
 
-The Dockerfile runs tests and `collectstatic` at build time, then `migrate` + `gunicorn` at startup. CI (GitHub Actions) builds and pushes to `ghcr.io` on pushes to `master`.
+The Dockerfile runs ruff, pyright, tests, and `collectstatic` at build time, then `migrate` + `gunicorn` at startup. CI (GitHub Actions) builds and pushes to `ghcr.io` on pushes to `master`.
