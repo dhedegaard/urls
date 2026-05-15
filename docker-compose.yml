@@ -5,4 +5,4 @@ services:
     network_mode: host
     environment:
       - DATABASE_URL=${DATABASE_URL}
-      - PORT=${PORT}
+      - PORT=${PORT:-8080}
