@@ -1,3 +1,5 @@
+from typing import Any
+
 from django import forms
 from django.core.validators import URLValidator
 from django.urls import resolve
@@ -28,7 +30,7 @@ class UrlForm(forms.ModelForm):
             "keyword": forms.TextInput(attrs={"class": "form-control"}),
         }
 
-    def clean(self):
+    def clean(self) -> dict[str, Any]:
         super().clean()
         if any(self.errors):
             return self.cleaned_data

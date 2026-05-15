@@ -14,7 +14,7 @@ class Url(models.Model):
     public = models.BooleanField(
         verbose_name='Public redirect', default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"keyword: {self.keyword}, url: {self.url}, "
             f"proxy: {self.proxy}, public: {self.public}"

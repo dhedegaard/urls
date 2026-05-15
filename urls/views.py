@@ -59,7 +59,7 @@ def delete(request: HttpRequest, keyword: str) -> HttpResponse:
 
 @login_required
 @transaction.atomic
-def create(request: HttpRequest, keyword: str | None = None):
+def create(request: HttpRequest, keyword: str | None = None) -> HttpResponse:
     if request.method == "POST":
         if keyword is not None:
             # If we're editing, make sure to provide the existing instance.
@@ -111,7 +111,7 @@ def _redirect_proxy(url: str) -> HttpResponse:
     )
 
 
-def redirector(_request: HttpRequest, keyword: str | None) -> HttpResponse:
+def redirector(_request: HttpRequest, keyword: str) -> HttpResponse:
     url: Url = get_object_or_404(Url, keyword=keyword)
     if url.proxy:
         return _redirect_proxy(url.url)
