@@ -51,7 +51,7 @@ class UrlForm(forms.ModelForm):
         match = resolve(f"/{keyword}")
         if match.url_name != "redirector":
             self.add_error(
-                "keyword", ("Keyword is used by an internal " "URL of the system")
+                "keyword", "Keyword is used by an internal URL of the system"
             )
 
         return data

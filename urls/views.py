@@ -8,7 +8,6 @@ from django.views.decorators.http import require_POST
 from django.http import (
     HttpRequest,
     HttpResponse,
-    HttpResponseNotFound,
     HttpResponseServerError,
 )
 from django.db import transaction
@@ -18,13 +17,6 @@ from .models import Url
 
 
 def _add_event_message(request: HttpRequest, keyword: str, event: str) -> None:
-    """
-    This methods buids and adds a HTML string to django messages.
-
-    :param request: The current request.
-    :param keyword: The keyword causing the event, as a string.
-    :param event: The name of the event, as a string (created/deleted/...).
-    """
     messages.success(
         request,
         format_html(
@@ -37,8 +29,8 @@ def _add_event_message(request: HttpRequest, keyword: str, event: str) -> None:
     )
 
 
-def list(request: HttpRequest) -> HttpResponse:
-    urls = Url.objects.select_related().all()
+def url_list(request: HttpRequest) -> HttpResponse:
+    urls = Url.objects.select_related("user").all()
 
     if not request.user.is_authenticated:
         urls = urls.filter(public=True)
@@ -95,17 +87,13 @@ def create(request: HttpRequest, keyword: str | None = None):
         else:
             form = UrlForm()
 
-    url_name: str | None = getattr(request.resolver_match, "url_name", "")
-    if not isinstance(url_name, str) or len(url_name) == 0:
-        return HttpResponseNotFound()
-
     return render(
         request,
         "create.html",
         {
             "form": form,
             "redirect_count": Url.objects.all().count(),
-            "title": url_name.title(),
+            "title": request.resolver_match.url_name.title(),
             "keyword": keyword,
         },
     )
