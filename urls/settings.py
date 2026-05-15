@@ -1,6 +1,5 @@
-from __future__ import annotations
 import os
-from typing import Dict, cast
+from typing import cast
 
 ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DEBUG: bool = "PRODUCTION" not in os.environ
@@ -22,7 +21,7 @@ if "DATABASE_URL" in os.environ and os.environ["DATABASE_URL"]:
     import dj_database_url
 
     DATABASES["default"] = cast(
-        Dict[str, str],
+        dict[str, str],
         dj_database_url.config(
             default=os.environ["DATABASE_URL"],
             conn_max_age=600,
