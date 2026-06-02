@@ -10,6 +10,8 @@ A minimal Django app that maps short keywords to URLs, supporting HTTP 302 redir
 
 Dependencies are managed with [uv](https://docs.astral.sh/uv/) via `pyproject.toml` and locked in `uv.lock`. Python is pinned to `==3.14.*` (also the `python:3.14` base image and pyright's `pythonVersion`); ruff targets `py314`.
 
+**Django must stay on an LTS release.** Only upgrade Django between LTS versions (e.g. 4.2 → 5.2 → 6.2); do not move to non-LTS feature releases. Keep `django-stubs` aligned to the same major version.
+
 ## Commands
 
 ```bash
