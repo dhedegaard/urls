@@ -74,7 +74,7 @@ class ViewsTestCase(TestCase):
 
     @mock.patch("urls.views.requests")
     def test_existing_proxy_keyword(self, requests_patch):  # type: ignore
-        requests_patch.get.return_value.text = "<html></html>"
+        requests_patch.get.return_value.content = b"<html></html>"
         requests_patch.get.return_value.headers = {"Content-Type": "text/html"}
         response = self.client.get(
             reverse(
@@ -85,7 +85,23 @@ class ViewsTestCase(TestCase):
             )
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response["Content-Type"], "text/html")
+        self.assertEqual(response["Content-Type"], "text/html")
+        self.assertEqual(response.content, b"<html></html>")
+
+    @mock.patch("urls.views.requests")
+    def test_existing_proxy_keyword_binary(self, requests_patch):  # type: ignore
+        # A 1x1 PNG: arbitrary binary that must survive byte-for-byte.
+        png = bytes.fromhex(
+            "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"
+        )
+        requests_patch.get.return_value.content = png
+        requests_patch.get.return_value.headers = {"Content-Type": "image/png"}
+        response = self.client.get(
+            reverse("redirector", kwargs={"keyword": "test-proxy-keyword"})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response["Content-Type"], "image/png")
+        self.assertEqual(response.content, png)
 
     def test_delete_nonexistant_keyword(self):
         keyword = self.keyword.keyword

@@ -107,7 +107,8 @@ def _redirect_proxy(url: str) -> HttpResponse:
     except requests.exceptions.ConnectionError as e:
         return HttpResponseServerError(str(e))
     return HttpResponse(
-        response.text, content_type=response.headers.get("Content-Type", "text/plain")
+        response.content,
+        content_type=response.headers.get("Content-Type", "text/plain"),
     )
 
 
