@@ -5,6 +5,11 @@ ROOT: str = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DEBUG: bool = "PRODUCTION" not in os.environ
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Production runs behind HTTPS, so send session/CSRF cookies over TLS only.
+# Gated on PRODUCTION (not DEBUG) so local HTTP dev keeps working.
+SESSION_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_SECURE = not DEBUG
+
 ADMINS = (("Dennis Hedegaard", "dennis@dhedegaard.dk"),)
 
 DATABASES = {
@@ -73,6 +78,7 @@ SECRET_KEY = os.environ.get(
 )
 
 MIDDLEWARE = (
+    "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
