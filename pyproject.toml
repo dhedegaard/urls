@@ -16,9 +16,9 @@ dependencies = [
 dev = [
     "coverage>=7.14.0",
     "django-stubs==5.2.*",
-    "pyright>=1.1.409",
-    "ruff>=0.15.13",
-    "types-requests>=2.33.0.20260513",
+    "pyright>=1.1.410",
+    "ruff>=0.15.15",
+    "types-requests>=2.33.0.20260518",
 ]
 
 [tool.pyright]
