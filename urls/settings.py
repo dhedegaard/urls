@@ -42,6 +42,19 @@ ALLOWED_HOSTS: list[str] = (
     ]
 )
 
+# Django 4.0+ checks the request Origin against CSRF_TRUSTED_ORIGINS (which must
+# include the scheme) for unsafe requests like the login POST. Derive https
+# origins from ALLOWED_HOSTS, or override with comma-separated CSRF_TRUSTED_ORIGINS.
+CSRF_TRUSTED_ORIGINS: list[str] = (
+    os.environ["CSRF_TRUSTED_ORIGINS"].split(",")
+    if "CSRF_TRUSTED_ORIGINS" in os.environ
+    else [
+        f"https://{host}"
+        for host in ALLOWED_HOSTS
+        if host not in ("127.0.0.1", "localhost")
+    ]
+)
+
 TIME_ZONE = "Europe/Copenhagen"
 LANGUAGE_CODE = "en-us"
 USE_I18N = True
