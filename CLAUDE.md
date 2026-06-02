@@ -60,7 +60,7 @@ The entire app lives in the `urls/` package (which is also the Django project pa
 - **Debug mode:** `DEBUG=True` unless `PRODUCTION` env var is set.
 - **Secret key:** Read from `SECRET_KEY` env var; falls back to a hardcoded dev default.
 - **ALLOWED_HOSTS:** Defaults to localhost + dhedegaard.dk domains; override with comma-separated `ALLOWED_HOSTS` env var.
-- **Port:** Set `PORT` env var to control the gunicorn port (used in docker-compose).
+- **Port:** Set `PORT` env var to control the gunicorn port; the container binds gunicorn to `0.0.0.0:$PORT` and emits access logs to stdout.
 
 ## Deployment
 

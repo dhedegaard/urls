@@ -7,7 +7,7 @@ from django.forms import Form
 from django.http import HttpResponseServerError, StreamingHttpResponse
 from django.test import TestCase
 from django.urls import reverse
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, RequestException, Timeout
 
 from .models import Url
 from .views import _redirect_proxy  # type: ignore
@@ -308,9 +308,19 @@ class ViewsTestCase(TestCase):
 
     @mock.patch("urls.views.requests")
     def test_redirector__exception(self, requests_patch):  # type: ignore
+        requests_patch.exceptions.RequestException = RequestException  # type: ignore
         requests_patch.get.side_effect = ConnectionError("something bad happened")  # type: ignore
-        requests_patch.exceptions.ConnectionError = ConnectionError  # type: ignore
 
         self.assertTrue(
             isinstance(_redirect_proxy("http://testserver/"), HttpResponseServerError)
+        )
+
+    @mock.patch("urls.views.requests")
+    def test_redirector__timeout(self, requests_patch):  # type: ignore
+        # Any request failure, not just ConnectionError, returns a 5xx.
+        requests_patch.exceptions.RequestException = RequestException  # type: ignore
+        requests_patch.get.side_effect = Timeout("timed out")  # type: ignore
+
+        self.assertIsInstance(
+            _redirect_proxy("http://testserver/"), HttpResponseServerError
         )

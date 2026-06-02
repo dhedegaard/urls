@@ -117,7 +117,7 @@ def _stream_response(response: requests.Response) -> Iterator[bytes]:
 def _redirect_proxy(url: str) -> HttpResponseBase:
     try:
         response: requests.Response = requests.get(url, stream=True, timeout=15)
-    except requests.exceptions.ConnectionError as e:
+    except requests.exceptions.RequestException as e:
         return HttpResponseServerError(str(e))
     return StreamingHttpResponse(
         _stream_response(response),

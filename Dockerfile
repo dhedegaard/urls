@@ -15,4 +15,4 @@ RUN uv sync --frozen && \
 
 EXPOSE ${PORT}
 
-CMD ["sh", "-c", "uv run manage.py migrate && uv run gunicorn urls.wsgi"]
+CMD ["sh", "-c", "uv run manage.py migrate && uv run gunicorn urls.wsgi --bind 0.0.0.0:$PORT --access-logfile -"]
