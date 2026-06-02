@@ -1,15 +1,21 @@
+from collections.abc import Iterator
 from typing import cast
 from unittest import mock
 
 from django.contrib.auth.models import User
 from django.forms import Form
-from django.http import HttpResponseServerError
+from django.http import HttpResponseServerError, StreamingHttpResponse
 from django.test import TestCase
 from django.urls import reverse
 from requests.exceptions import ConnectionError
 
 from .models import Url
 from .views import _redirect_proxy  # type: ignore
+
+
+def _streamed_body(response: object) -> bytes:
+    content = cast(StreamingHttpResponse, response).streaming_content
+    return b"".join(cast(Iterator[bytes], content))
 
 
 class ViewsTestCase(TestCase):
@@ -74,7 +80,9 @@ class ViewsTestCase(TestCase):
 
     @mock.patch("urls.views.requests")
     def test_existing_proxy_keyword(self, requests_patch):  # type: ignore
-        requests_patch.get.return_value.content = b"<html></html>"
+        requests_patch.get.return_value.iter_content.return_value = iter(
+            [b"<html></html>"]
+        )
         requests_patch.get.return_value.headers = {"Content-Type": "text/html"}
         response = self.client.get(
             reverse(
@@ -86,22 +94,38 @@ class ViewsTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "text/html")
-        self.assertEqual(response.content, b"<html></html>")
+        self.assertEqual(_streamed_body(response), b"<html></html>")
 
     @mock.patch("urls.views.requests")
     def test_existing_proxy_keyword_binary(self, requests_patch):  # type: ignore
-        # A 1x1 PNG: arbitrary binary that must survive byte-for-byte.
+        # 1x1 PNG: binary that must survive byte-for-byte.
         png = bytes.fromhex(
             "89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c489"
         )
-        requests_patch.get.return_value.content = png
+        requests_patch.get.return_value.iter_content.return_value = iter([png])
         requests_patch.get.return_value.headers = {"Content-Type": "image/png"}
         response = self.client.get(
             reverse("redirector", kwargs={"keyword": "test-proxy-keyword"})
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response["Content-Type"], "image/png")
-        self.assertEqual(response.content, png)
+        self.assertEqual(_streamed_body(response), png)
+
+    @mock.patch("urls.views.requests")
+    def test_proxy_streams_chunks(self, requests_patch):  # type: ignore
+        # Body streamed lazily in chunks, never materialized whole.
+        requests_patch.get.return_value.iter_content.return_value = iter(
+            [b"chunk-1", b"chunk-2", b"chunk-3"]
+        )
+        requests_patch.get.return_value.headers = {
+            "Content-Type": "application/octet-stream"
+        }
+        response = self.client.get(
+            reverse("redirector", kwargs={"keyword": "test-proxy-keyword"})
+        )
+        self.assertTrue(response.streaming)
+        self.assertEqual(requests_patch.get.call_args.kwargs.get("stream"), True)
+        self.assertEqual(_streamed_body(response), b"chunk-1chunk-2chunk-3")
 
     def test_delete_nonexistant_keyword(self):
         keyword = self.keyword.keyword

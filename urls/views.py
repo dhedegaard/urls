@@ -1,3 +1,5 @@
+from collections.abc import Iterator
+
 import requests
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,7 +7,9 @@ from django.db import transaction
 from django.http import (
     HttpRequest,
     HttpResponse,
+    HttpResponseBase,
     HttpResponseServerError,
+    StreamingHttpResponse,
 )
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -101,18 +105,27 @@ def create(request: HttpRequest, keyword: str | None = None) -> HttpResponse:
     )
 
 
-def _redirect_proxy(url: str) -> HttpResponse:
+def _stream_response(response: requests.Response) -> Iterator[bytes]:
+    # Stream in chunks, never buffering the whole body; release the
+    # connection when done or on early client disconnect.
     try:
-        response: requests.Response = requests.get(url, timeout=15)
+        yield from response.iter_content(chunk_size=8192)
+    finally:
+        response.close()
+
+
+def _redirect_proxy(url: str) -> HttpResponseBase:
+    try:
+        response: requests.Response = requests.get(url, stream=True, timeout=15)
     except requests.exceptions.ConnectionError as e:
         return HttpResponseServerError(str(e))
-    return HttpResponse(
-        response.content,
+    return StreamingHttpResponse(
+        _stream_response(response),
         content_type=response.headers.get("Content-Type", "text/plain"),
     )
 
 
-def redirector(_request: HttpRequest, keyword: str) -> HttpResponse:
+def redirector(_request: HttpRequest, keyword: str) -> HttpResponseBase:
     url: Url = get_object_or_404(Url, keyword=keyword)
     if url.proxy:
         return _redirect_proxy(url.url)
